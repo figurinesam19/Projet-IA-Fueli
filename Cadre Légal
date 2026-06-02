@@ -1,1 +1,29 @@
+Cadre légal — Fueli
+1. Obligations RGPD applicables à Fueli
 
+Consentement explicite — Bloquant
+L'utilisateur doit cocher une case non pré-cochée acceptant que ses données de santé soient collectées. Le consentement doit être libre, spécifique, éclairé et univoque. Il doit être stocké avec une date.
+Politique de confidentialité — Bloquant
+Un document accessible depuis l'app qui explique : quelles données sont collectées, pourquoi, combien de temps elles sont conservées, avec qui elles sont partagées (personne en V1), et les droits de l'utilisateur.
+Droit d'accès et de rectification — Bloquant
+L'utilisateur doit pouvoir consulter et modifier ses données personnelles depuis son profil.
+Droit à l'effacement — Bloquant
+Un bouton "Supprimer mon compte et toutes mes données" accessible depuis les paramètres. Suppression réelle et définitive en base de données.
+Minimisation des données — Important
+Ne collecter que ce qui est strictement nécessaire au fonctionnement de l'app. Pas de données superflues.
+Sécurité des données — Bloquant
+Mots de passe hashés (bcrypt), connexion HTTPS obligatoire, données chiffrées en base si possible. Jamais de données sensibles stockées en clair.
+CGU (Conditions Générales d'Utilisation) — Recommandé
+Document définissant les règles d'utilisation de l'app. Moins critique que la politique de confidentialité pour un projet perso, mais recommandé.
+DPO (Délégué à la Protection des Données) — Non applicable V1
+Obligatoire uniquement pour les traitements à grande échelle. Non obligatoire pour un projet portfolio avec peu d'utilisateurs.
+
+2. Checklist minimum V1
+À compléter avant tout utilisateur réel.
+
+ Case de consentement à l'inscription — non pré-cochée, texte clair mentionnant les données collectées et le lien vers la politique de confidentialité
+ Page Politique de confidentialité hébergée sur le domaine — à générer via un outil comme iubenda et personnaliser avec les données réelles collectées par Fueli
+ Bouton "Supprimer mon compte" dans les paramètres — suppression en cascade de toutes les données liées au compte en base
+ HTTPS obligatoire — standard sur Vercel, Netlify, etc., souvent automatique
+ Mots de passe hashés — bcrypt ou argon2 ; géré automatiquement via Supabase Auth
+ Accès et modification des données personnelles — l'utilisateur peut modifier son profil depuis l'app
