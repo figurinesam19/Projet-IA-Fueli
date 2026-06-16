@@ -1,0 +1,45 @@
+Hiérarchie des fonctionnalités V1
+Niveau 1 — Cœur absolu
+Sans ces fonctionnalités, l'app n'existe pas
+Onboarding + profil utilisateur
+
+Âge, sexe, taille, poids, objectif (perte / masse / équilibre), niveau d'activité. Calcul automatique de l'objectif calorique journalier. Consentement RGPD obligatoire.
+Scan photo IA
+
+Prise de photo du repas → identification des aliments → estimation des portions → affichage calories + macros. Résultats en plage de valeurs, ajustement manuel possible.
+Recherche texte (fallback)
+
+Barre de recherche connectée à CIQUAL + Open Food Facts. Indispensable quand le scan échoue ou que l'utilisateur ne veut pas prendre de photo.
+Scan code-barre (fallback)
+
+Pour les produits emballés. Lecture du code-barre → données nutritionnelles depuis Open Food Facts. Rapide, fiable, sans friction.
+Récapitulatif quotidien
+
+Vue du jour : calories consommées vs objectif, répartition macros (protéines / glucides / lipides). Visible dès le premier repas loggué.
+
+Niveau 2 — Valeur perçue rapide
+Ce qui donne envie de revenir dans les premiers jours
+Historique des repas sur 7 jours
+
+L'utilisateur peut consulter ce qu'il a mangé les 7 derniers jours. Simple, utile, donne le sentiment de progression dès la première semaine.
+Section articles / conseils
+
+Mini-articles rédigés par le créateur de l'app : conseils nutrition, tutos, démystification des idées reçues. Contenu statique en V1, pas besoin d'un CMS complexe au départ.
+
+Niveau 3 — Hors scope V1 — V2 et au-delà
+Bonnes idées, mauvais moment
+Graphiques de progression du poids
+
+Utile seulement après plusieurs semaines d'usage. Inutile pour un nouvel utilisateur — V2.
+Génération de menus personnalisés
+
+Fonctionnalité complexe à construire et à fiabiliser. Vision long terme confirmée.
+Intégration wearables
+
+Garmin, Fitbit, Apple Watch. Complexité d'intégration élevée pour une V1.
+Recommandations IA personnalisées
+
+Requiert des données d'usage accumulées pour être pertinent. Pas de sens en V1.
+Fonctionnalités sociales
+
+Communauté, partage, défis. Hors scope total pour ce projet.
