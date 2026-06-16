@@ -1,0 +1,34 @@
+Fueli
+De l'anglais fuel — le carburant. Fueli, c'est l'idée que la nourriture est le carburant du corps : ce que tu manges détermine ce que tu peux accomplir. Le nom est court, mémorable, et ancré dans une vision concrète de l'alimentation — pas de restriction, pas de régime, juste comprendre ce que tu mets dans ton corps.
+
+Le projet
+Un tracker nutritionnel simple et quotidien
+Fueli est une application web de suivi nutritionnel qui permet à l'utilisateur de photographier ses repas, d'obtenir instantanément une estimation de ses apports en calories, protéines, glucides et lipides, et de suivre son évolution au fil du temps. L'application inclut également une section éditoriale — articles, conseils et tutos rédigés — pour aider les utilisateurs à mieux comprendre ce qu'ils mangent, sans que ce soit la fonctionnalité principale.
+
+Core loop — ce que fait l'utilisateur au quotidien
+Étape 01 — Photo du repas
+
+L'utilisateur prend en photo son plat depuis l'app.
+Étape 02 — Analyse IA
+
+Identification des aliments et estimation des portions.
+Étape 03 — Données nutritionnelles
+
+Calories, protéines, glucides, lipides affichés.
+Étape 04 — Suivi mis à jour
+
+Le repas s'enregistre et met à jour le tableau de bord du jour.
+
+Public cible — 18–30 ans
+C'est la tranche d'âge où les habitudes alimentaires se construisent réellement — première fois qu'on cuisine seul, premier appartement, sortie du cadre familial. Sans repères établis, beaucoup mangent mal par défaut, non par manque d'intérêt mais par manque d'outils simples.
+C'est aussi la génération la plus exposée aux contenus nutrition sur les réseaux sociaux : déjà sensibilisée à l'importance de bien manger, elle cherche des solutions concrètes plutôt que des discours. Elle est native mobile, adopte naturellement le scan photo comme interaction, et n'a pas besoin qu'on lui explique pourquoi se nourrir correctement est important — elle a juste besoin d'un outil qui rende ça facile au quotidien.
+La borne haute à 30 ans inclut les jeunes actifs qui commencent à prendre leur santé plus sérieusement, sans pour autant cibler un public médical ou sportif de compétition.
+
+Problématique
+Les sportifs amateurs et les jeunes adultes soucieux de leur alimentation manquent d'outils simples et gratuits pour comprendre réellement ce qu'ils mangent au quotidien. Ils savent qu'ils devraient mieux manger, mais sans repères précis — et avec des croyances alimentaires souvent erronées — ils naviguent à l'intuition. Les applications existantes qui pourraient les aider sont soit trop complexes, soit bridées derrière un abonnement payant qui décourage l'usage régulier.
+
+Valeur ajoutée
+Fueli répond à ce problème avec trois partis pris clairs.
+Gratuit et réellement utilisable. Le scan photo, la recherche d'aliments et le suivi quotidien sont accessibles sans abonnement. Ce que les concurrents ont placé derrière un paywall est le cœur de Fueli.
+Simple et immédiat. L'utilisateur prend en photo son repas et obtient en quelques secondes la composition nutritionnelle de son assiette — calories, protéines, glucides, lipides. Pas de saisie manuelle fastidieuse, pas d'interface complexe. Le résultat est visible dès le premier repas.
+Éducatif sans être condescendant. Une section éditoriale rédigée par le créateur de l'app propose des articles courts pour démystifier les idées reçues sur l'alimentation — les faux aliments sains, les vrais besoins selon l'objectif, les erreurs courantes chez les sportifs amateurs. L'objectif n'est pas d'enseigner mais d'éclairer.
