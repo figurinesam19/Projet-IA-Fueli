@@ -2,10 +2,11 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, ImagePlus, Loader2, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { compressImage } from "@/lib/image";
 import { saveScannedMeal, type ScanItem } from "./actions";
 import { ReviewItems } from "./review-items";
+import { CameraCapture } from "./camera-capture";
 
 type Stage = "capture" | "analyzing" | "review";
 
@@ -16,9 +17,7 @@ export function ScanFlow() {
   const [stage, setStage] = useState<Stage>("capture");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [items, setItems] = useState<ScanItem[]>([]);
-  const [confidence, setConfidence] = useState<"high" | "medium" | "low" | null>(
-    null,
-  );
+  const [confidence, setConfidence] = useState<"high" | "medium" | "low" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
@@ -41,9 +40,7 @@ export function ScanFlow() {
         return;
       }
       if (!json.items?.length) {
-        setError(
-          "Aucun aliment détecté. Reprends la photo en cadrant mieux l'assiette.",
-        );
+        setError("Aucun aliment détecté. Reprends la photo en cadrant mieux l'assiette.");
         setStage("capture");
         return;
       }
@@ -54,6 +51,10 @@ export function ScanFlow() {
       setError(e instanceof Error ? e.message : "Erreur inconnue");
       setStage("capture");
     }
+  }
+
+  function openGallery() {
+    fileInput.current?.click();
   }
 
   function reset() {
@@ -86,45 +87,25 @@ export function ScanFlow() {
         </button>
       </header>
 
+      {/* Input galerie caché */}
+      <input
+        ref={fileInput}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) handleFile(f);
+          e.target.value = "";
+        }}
+      />
+
       {stage === "capture" && (
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Prends une photo nette de ton repas, vue de dessus si possible.
+            Cadre ton repas bien au centre, vue de dessus si possible.
           </p>
-          <input
-            ref={fileInput}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) handleFile(f);
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => fileInput.current?.click()}
-            className="flex h-40 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-card text-muted-foreground transition hover:border-primary hover:text-primary"
-          >
-            <Camera className="size-8" />
-            <span className="text-sm font-medium">Prendre une photo</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (fileInput.current) fileInput.current.removeAttribute("capture");
-              fileInput.current?.click();
-              setTimeout(
-                () => fileInput.current?.setAttribute("capture", "environment"),
-                500,
-              );
-            }}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-card p-3 text-sm font-medium text-foreground hover:bg-muted"
-          >
-            <ImagePlus className="size-4" />
-            Importer depuis la galerie
-          </button>
+          <CameraCapture onCapture={handleFile} onGallery={openGallery} />
           {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
       )}
