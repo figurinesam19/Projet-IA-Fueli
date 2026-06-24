@@ -6,8 +6,10 @@ import {
   emptyConsumption,
   type DailyConsumption,
 } from "@/lib/nutrition";
+import { dayBounds, isSameDay, parseDayKey } from "@/lib/date";
 import { DailyCard } from "./daily-card";
 import { MacroBars } from "./macro-bars";
+import { DateStrip } from "./date-strip";
 
 function formatDate(d: Date) {
   return d.toLocaleDateString("fr-FR", {
@@ -17,7 +19,11 @@ function formatDate(d: Date) {
   });
 }
 
-export default async function TodayPage() {
+export default async function TodayPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ d?: string }>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -29,15 +35,28 @@ export default async function TodayPage() {
     .eq("id", user!.id)
     .single();
 
-  // Repas du jour (00:00 → maintenant)
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const { d } = await searchParams;
+  const requested = d ? parseDayKey(d) : null;
 
+  // On limite la navigation aux 7 derniers jours
+  const minDate = new Date(today);
+  minDate.setDate(today.getDate() - 6);
+
+  let selected = today;
+  if (requested && requested >= minDate && requested <= today) {
+    selected = requested;
+  }
+  const isToday = isSameDay(selected, today);
+
+  const { start, end } = dayBounds(selected);
   const { data: meals } = await supabase
     .from("meals")
     .select("*")
     .eq("user_id", user!.id)
-    .gte("consumed_at", startOfDay.toISOString())
+    .gte("consumed_at", start.toISOString())
+    .lt("consumed_at", end.toISOString())
     .order("consumed_at", { ascending: false });
 
   const consumption: DailyConsumption = (meals ?? []).reduce(
@@ -57,12 +76,16 @@ export default async function TodayPage() {
     <main className="mx-auto flex w-full max-w-md flex-col gap-6 p-5">
       <header>
         <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-          {formatDate(new Date())}
+          {formatDate(selected)}
         </p>
         <h1 className="mt-1 text-[22px] font-medium">
-          Salut {profile?.first_name ?? "👋"}
+          {isToday
+            ? `Salut ${profile?.first_name ?? "👋"}`
+            : "Historique"}
         </h1>
       </header>
+
+      <DateStrip selected={selected} />
 
       {targets ? (
         <>
@@ -80,7 +103,9 @@ export default async function TodayPage() {
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-[18px] font-medium">Repas du jour</h2>
+          <h2 className="text-[18px] font-medium">
+            {isToday ? "Repas du jour" : "Repas"}
+          </h2>
           {!hasNoMeals && (
             <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
               {meals!.length} repas
@@ -90,10 +115,16 @@ export default async function TodayPage() {
 
         {hasNoMeals ? (
           <div className="rounded-xl border border-dashed border-border bg-card p-6 text-center">
-            <p className="text-sm text-foreground">Aucun repas aujourd&apos;hui.</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Scanne ton premier plat pour démarrer la journée.
+            <p className="text-sm text-foreground">
+              {isToday
+                ? "Aucun repas aujourd'hui."
+                : "Aucun repas enregistré ce jour."}
             </p>
+            {isToday && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Scanne ton premier plat pour démarrer la journée.
+              </p>
+            )}
           </div>
         ) : (
           <ul className="space-y-2">
@@ -129,31 +160,33 @@ export default async function TodayPage() {
         )}
       </section>
 
-      <div className="sticky bottom-20 z-0 mt-2 space-y-2">
-        <Link
-          href="/scan"
-          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent text-sm font-medium text-accent-foreground transition-colors hover:bg-accent/90"
-        >
-          <Camera className="size-4" />
-          Scanner un plat
-        </Link>
-        <div className="grid grid-cols-2 gap-2">
+      {isToday && (
+        <div className="sticky bottom-20 z-0 mt-2 space-y-2">
           <Link
-            href="/search"
-            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            href="/scan"
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent text-sm font-medium text-accent-foreground transition-colors hover:bg-accent/90"
           >
-            <Search className="size-4" />
-            Rechercher
+            <Camera className="size-4" />
+            Scanner un plat
           </Link>
-          <Link
-            href="/barcode"
-            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
-          >
-            <ScanBarcode className="size-4" />
-            Code-barre
-          </Link>
+          <div className="grid grid-cols-2 gap-2">
+            <Link
+              href="/search"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              <Search className="size-4" />
+              Rechercher
+            </Link>
+            <Link
+              href="/barcode"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              <ScanBarcode className="size-4" />
+              Code-barre
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
     </main>
   );
 }

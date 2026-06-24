@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { computeDailyTargets } from "@/lib/nutrition";
 import { ProfileActions } from "./profile-actions";
@@ -17,11 +19,20 @@ export default async function ProfilePage() {
 
   return (
     <main className="mx-auto w-full max-w-md space-y-6 p-5">
-      <header>
-        <h1 className="text-[22px] font-medium">
-          {profile?.first_name} {profile?.last_name}
-        </h1>
-        <p className="text-sm text-muted-foreground">{user!.email}</p>
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-[22px] font-medium">
+            {profile?.first_name} {profile?.last_name}
+          </h1>
+          <p className="text-sm text-muted-foreground">{user!.email}</p>
+        </div>
+        <Link
+          href="/profile/edit"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium text-foreground hover:bg-muted"
+        >
+          <Pencil className="size-3.5" />
+          Modifier
+        </Link>
       </header>
 
       <section className="rounded-xl border border-border bg-card p-4">
