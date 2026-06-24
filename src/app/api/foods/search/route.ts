@@ -60,8 +60,11 @@ export async function GET(request: Request) {
       searchFoods(q).catch(() => [] as FoodResult[]),
     ]);
 
-    // CIQUAL en premier (aliments génériques fiables), puis OFF (produits emballés)
-    const combined = [...ciqualResults, ...offResults].slice(0, 30);
+    // Si CIQUAL a des résultats → on affiche uniquement CIQUAL (évite les hors-sujet OFF)
+    // Si CIQUAL n'a rien → on tombe sur OFF (produits emballés, marques)
+    const combined = ciqualResults.length > 0
+      ? ciqualResults.slice(0, 20)
+      : offResults.slice(0, 20);
     return NextResponse.json({ results: combined });
   } catch (err) {
     console.error("foods/search error", err);

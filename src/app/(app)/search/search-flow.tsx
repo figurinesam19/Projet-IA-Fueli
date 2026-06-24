@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import type { FoodResult } from "@/lib/openfoodfacts";
+import { getFoodEmoji } from "@/lib/food-emoji";
 import { AddFoodPanel } from "./add-food-panel";
 
 export function SearchFlow() {
@@ -118,7 +119,9 @@ export function SearchFlow() {
                   className="size-12 rounded-lg object-cover"
                 />
               ) : (
-                <div className="size-12 rounded-lg bg-muted" />
+                <div className="flex size-12 items-center justify-center rounded-lg bg-muted text-2xl">
+                  {getFoodEmoji(r.name)}
+                </div>
               )}
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{r.name}</p>

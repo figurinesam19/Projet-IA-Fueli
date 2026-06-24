@@ -8,6 +8,7 @@ import {
   computeMacrosForQuantity,
   type FoodResult,
 } from "@/lib/openfoodfacts";
+import { getFoodEmoji } from "@/lib/food-emoji";
 import { saveMealItem } from "../_actions/save-meal-item";
 
 type Props = {
@@ -62,7 +63,9 @@ export function AddFoodPanel({ food, source, onCancel }: Props) {
             className="size-14 rounded-lg object-cover"
           />
         ) : (
-          <div className="size-14 rounded-lg bg-muted" />
+          <div className="flex size-14 items-center justify-center rounded-lg bg-muted text-3xl">
+            {getFoodEmoji(food.name)}
+          </div>
         )}
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">{food.name}</p>
