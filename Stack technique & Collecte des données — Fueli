@@ -1,0 +1,133 @@
+Voilà le texte brut :
+
+---
+
+# Stack technique & Collecte des données — Fueli
+
+---
+
+## Partie 1 — Collecte des données utilisateur
+
+### Données collectées à l'inscription (onboarding multi-étapes)
+
+**Étape 1 — Compte**
+Adresse email (utilisée uniquement pour la réinitialisation du mot de passe, aucun usage marketing) + mot de passe (géré par Supabase Auth, jamais stocké en clair).
+
+**Étape 2 — Identité**
+Nom, prénom, âge, sexe. Utilisés pour personnaliser l'expérience et afficher le prénom dans l'app.
+
+**Étape 3 — Morphologie**
+Poids actuel (kg), taille (cm). Données indispensables pour calculer l'objectif calorique journalier via la formule Mifflin-St Jeor.
+
+**Étape 4 — Objectif**
+Perte de poids / Prise de masse / Équilibre alimentaire. Détermine le déficit ou surplus calorique appliqué à l'objectif journalier.
+
+**Étape 5 — Activité physique**
+3 choix : "Je ne fais pas de sport" / "Je fais un peu de sport" / "Je fais régulièrement du sport".
+Si l'utilisateur choisit "un peu" ou "régulièrement", on lui demande la fréquence : 1-2 fois / 3-4 fois / 5 fois et plus par semaine. Ce champ affine le calcul calorique.
+
+**Étape 6 — Consentement RGPD**
+Case à cocher non pré-cochée obligatoire : "J'accepte que mes données de santé soient traitées par Fueli conformément à la politique de confidentialité." + lien vers la politique de confidentialité. Sans cette case cochée, l'inscription est bloquée.
+
+---
+
+### Données collectées pendant l'utilisation
+
+**Photos de repas**
+Envoyées à l'API OpenAI pour analyse. Non stockées dans Supabase — seul le résultat de l'analyse (aliments identifiés + estimation nutritionnelle) est enregistré.
+
+**Repas loggués**
+Aliments, portions estimées, calories, protéines, glucides, lipides. Associés à la date et à l'heure du repas.
+
+**Poids (mises à jour)**
+L'utilisateur peut mettre à jour son poids depuis son profil à tout moment. Chaque entrée est horodatée pour permettre le suivi de progression en V2.
+
+---
+
+### Principe de minimisation des données
+
+Fueli ne collecte que ce qui est strictement nécessaire au fonctionnement de l'app. Aucune donnée de localisation, aucun tracking comportemental, aucune donnée partagée avec des tiers. Les photos de repas ne sont pas conservées — seul le résultat de l'analyse est stocké.
+
+---
+
+## Partie 2 — Stack technique
+
+---
+
+### React + TypeScript
+**Rôle : Langage et bibliothèque frontend**
+
+React est la bibliothèque JavaScript la plus utilisée au monde pour construire des interfaces utilisateur. Elle permet de découper l'app en composants réutilisables — un bouton, une carte repas, un graphique — qu'on assemble pour former des écrans complets. TypeScript est une version plus stricte de JavaScript qui détecte les erreurs avant qu'elles arrivent, ce qui est particulièrement utile quand on travaille avec une IA qui génère du code.
+
+Pourquoi pour Fueli : c'est le framework le mieux supporté par Claude Code. La documentation est la plus abondante du marché. TypeScript réduit les bugs silencieux — important quand on ne code pas soi-même chaque ligne.
+
+---
+
+### Next.js
+**Rôle : Framework React avec couche serveur**
+
+Next.js est un framework construit au-dessus de React qui ajoute une couche serveur. Certaines parties du code tournent sur un serveur et ne sont jamais visibles par l'utilisateur. C'est essentiel pour protéger les clés API sensibles — clé OpenAI, clé Supabase — qui ne doivent jamais être exposées dans le navigateur.
+
+Pourquoi pour Fueli : sans Next.js, la clé API OpenAI serait visible par n'importe qui inspectant le code source de l'app. Avec Next.js, elle reste côté serveur, protégée. C'est aussi l'outil fait par Vercel, qui héberge l'app — compatibilité parfaite et déploiement automatique.
+
+---
+
+### Tailwind CSS + shadcn/ui
+**Rôle : Styling et composants visuels**
+
+Tailwind CSS est un système de classes CSS prédéfinies qu'on applique directement dans le code pour styliser les éléments — couleurs, espacements, tailles, arrondis. shadcn/ui est une bibliothèque de composants prêts à l'emploi construite sur Tailwind : boutons, formulaires, modales, menus déroulants — tout est déjà designé et personnalisable.
+
+Pourquoi pour Fueli : tu n'as pas besoin de connaître Tailwind — Claude Code l'écrit pour toi. Tu décris ce que tu veux en français, il traduit en classes Tailwind. shadcn/ui accélère le développement : au lieu de coder un formulaire d'inscription from scratch, tu utilises un composant existant que Claude Code personnalise selon tes instructions.
+
+---
+
+### Supabase
+**Rôle : Base de données + authentification**
+
+Supabase est une plateforme qui regroupe une base de données PostgreSQL, un système d'authentification complet (Supabase Auth), et une API générée automatiquement. C'est là que sont stockées toutes les données de Fueli — profils utilisateurs, repas loggués, données nutritionnelles. Supabase Auth gère les inscriptions, connexions et réinitialisations de mot de passe — les mots de passe ne sont jamais stockés en clair.
+
+Pourquoi pour Fueli : déjà utilisé sur un autre projet — pas en terrain inconnu. Tout est centralisé dans un seul outil. Gratuit jusqu'à 50 000 utilisateurs actifs par mois. Interface visuelle claire pour consulter et gérer les données sans écrire de SQL.
+
+---
+
+### CIQUAL + Open Food Facts
+**Rôle : Bases de données nutritionnelles**
+
+CIQUAL est la base de données nutritionnelle officielle française, gérée par l'ANSES. Elle contient ~3 000 aliments bruts avec des valeurs vérifiées en laboratoire. C'est la référence légale en France. Open Food Facts est une base collaborative de 3 millions de produits alimentaires emballés avec leurs codes-barres et données nutritionnelles. Les deux sont gratuites et disponibles via API.
+
+Pourquoi pour Fueli : CIQUAL couvre les aliments bruts français avec des données fiables et vérifiées. Open Food Facts couvre les produits emballés et les codes-barres. Ensemble, ils couvrent 95% des cas d'usage de Fueli sans aucun coût.
+
+---
+
+### OpenAI GPT-4o Mini
+**Rôle : API de scan photo et analyse des repas**
+
+GPT-4o Mini est un modèle d'IA d'OpenAI capable d'analyser des images. Quand l'utilisateur prend en photo son repas, l'image est envoyée à cette API avec un prompt précis demandant d'identifier les aliments et d'estimer les portions. Le modèle retourne les données en format JSON que l'app utilise pour afficher les informations nutritionnelles.
+
+Modèle économique : pas d'abonnement. Pay-as-you-go — tu déposes du crédit sur platform.openai.com (minimum $5) et tu es débité uniquement à l'usage. Coût estimé : moins de $0.001 par scan. $10 de crédit = plusieurs milliers de scans.
+
+Sécurité : la clé API OpenAI est stockée dans un fichier .env.local sur le projet et dans les variables d'environnement sur Vercel. Elle ne doit jamais être commitée sur GitHub ni exposée côté client. Next.js garantit qu'elle reste côté serveur.
+
+Quand créer la clé : uniquement au moment d'intégrer la fonctionnalité de scan dans Claude Code. Inutile de la créer avant.
+
+---
+
+### Vercel
+Rôle : Hébergement et déploiement
+
+Vercel est la plateforme d'hébergement qui rend Fueli accessible sur internet. Tu connectes ton dépôt GitHub à Vercel, et à chaque fois que tu pousses du code, l'app est automatiquement mise à jour et redéployée. Le HTTPS est inclus et configuré automatiquement. C'est la même entreprise qui développe Next.js — compatibilité parfaite.
+
+Pourquoi pour Fueli : gratuit pour un projet personnel. Déploiement automatique sans manipulation technique. Gestion des variables d'environnement intégrée dans l'interface. L'app a une URL publique dès le premier déploiement.
+
+---
+
+### v0.dev *(optionnel)*
+**Rôle : Outil de maquette**
+
+v0.dev est un outil de Vercel qui génère du code React + Tailwind + shadcn/ui directement depuis une description en langage naturel. Tu décris un écran, il le génère visuellement avec le code correspondant. Le code produit est compatible et réutilisable directement dans le projet Next.js.
+
+Quand l'utiliser : si tu veux visualiser un écran avant de le coder, ou prototyper rapidement une interface. Ce n'est pas obligatoire — Claude Code peut faire la même chose directement — mais c'est un bon outil pour itérer visuellement avant de coder.
+
+---
+
+Tu copies, tu colles sur GitHub. On passe à la problématique et la valeur ajoutée ?

@@ -1,0 +1,38 @@
+Identité visuelle — Fueli
+Couleurs
+Fond principal
+
+#F7F8FC — blanc cassé légèrement bleuté. Donne une sensation de légèreté sans être un blanc pur agressif.
+Bleu principal
+
+#1A5CFF — couleur dominante de l'app. Utilisée pour la carte bilan journalier, les onglets actifs, la navigation active, les éléments d'interface principaux.
+Orange accent
+
+#FF6B1A — couleur d'action. Utilisée exclusivement pour les CTA principaux (bouton "Scanner un plat") et les éléments qui demandent une action de l'utilisateur. Cohérent avec le nom Fueli — fuel, carburant, énergie.
+Texte principal
+
+#1A1A2E — presque noir, légèrement bleuté. Plus doux qu'un noir pur, cohérent avec l'ambiance générale.
+Couleurs des macronutriments
+
+Protéines — #1A5CFF (bleu)
+Lipides — #FF6B1A (orange)
+Glucides — #F0A500 (jaune)
+
+Ces trois couleurs sont fixes et cohérentes sur tous les écrans de l'app.
+Typographie
+Police — Inter (police par défaut Tailwind CSS)
+
+Propre, lisible, moderne. Aucune configuration supplémentaire nécessaire.
+Hiérarchie
+
+Titres principaux — 22px, font-weight 500
+Titres secondaires — 18px, font-weight 500
+Corps de texte — 14px, font-weight 400
+Labels et métadonnées — 11–12px, font-weight 500, uppercase
+
+Principes généraux
+
+Fond clair, pas de mode sombre en V1
+Pas de dégradés, pas d'ombres décoratives — surfaces plates et propres
+Coins arrondis — border-radius 8px pour les éléments, 12px pour les cartes
+Navigation en bas de l'écran — 3 onglets : Aujourd'hui / Apprendre / Profil
