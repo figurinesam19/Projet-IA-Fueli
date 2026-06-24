@@ -1,4 +1,4 @@
-import { Camera } from "lucide-react";
+import { Camera, ScanBarcode, Search } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -129,7 +129,7 @@ export default async function TodayPage() {
         )}
       </section>
 
-      <div className="sticky bottom-20 z-0 mt-2">
+      <div className="sticky bottom-20 z-0 mt-2 space-y-2">
         <Link
           href="/scan"
           className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent text-sm font-medium text-accent-foreground transition-colors hover:bg-accent/90"
@@ -137,6 +137,22 @@ export default async function TodayPage() {
           <Camera className="size-4" />
           Scanner un plat
         </Link>
+        <div className="grid grid-cols-2 gap-2">
+          <Link
+            href="/search"
+            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
+          >
+            <Search className="size-4" />
+            Rechercher
+          </Link>
+          <Link
+            href="/barcode"
+            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
+          >
+            <ScanBarcode className="size-4" />
+            Code-barre
+          </Link>
+        </div>
       </div>
     </main>
   );
