@@ -126,14 +126,45 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@keyframes fu-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fu-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fade-up {
+  animation: fu-fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-up-1 { animation: fu-fade-up 0.35s 0.05s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-up-2 { animation: fu-fade-up 0.35s 0.10s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-up-3 { animation: fu-fade-up 0.35s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-up-4 { animation: fu-fade-up 0.35s 0.20s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-up-5 { animation: fu-fade-up 0.35s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  /* Chiffres tabulaires dans les stats */
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Press feedback global sur tous les boutons et liens interactifs */
+  button:not(:disabled),
+  a {
+    @apply transition-transform duration-100 active:scale-[0.97];
   }
 }

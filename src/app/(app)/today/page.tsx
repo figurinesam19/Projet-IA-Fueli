@@ -74,40 +74,46 @@ export default async function TodayPage({
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-col gap-6 p-5">
-      <header>
-        <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <header className="animate-fade-up">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
           {formatDate(selected)}
         </p>
-        <h1 className="mt-1 text-[22px] font-medium">
+        <h1 className="mt-1 text-[24px] font-bold">
           {isToday
             ? `Salut ${profile?.first_name ?? "👋"}`
             : "Historique"}
         </h1>
       </header>
 
-      <DateStrip selected={selected} />
+      <div className="animate-fade-up-1">
+        <DateStrip selected={selected} />
+      </div>
 
       {targets ? (
         <>
-          <DailyCard
-            consumedKcal={Math.round(consumption.kcal)}
-            targetKcal={targets.kcal}
-          />
-          <MacroBars consumed={consumption} targets={targets} />
+          <div className="animate-fade-up-2">
+            <DailyCard
+              consumedKcal={Math.round(consumption.kcal)}
+              targetKcal={targets.kcal}
+            />
+          </div>
+          <div className="animate-fade-up-3">
+            <MacroBars consumed={consumption} targets={targets} />
+          </div>
         </>
       ) : (
-        <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">
+        <div className="animate-fade-up-2 rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">
           Termine ton onboarding pour voir ton objectif calorique.
         </div>
       )}
 
-      <section className="space-y-3">
+      <section className="animate-fade-up-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-[18px] font-medium">
+          <h2 className="text-[18px] font-semibold">
             {isToday ? "Repas du jour" : "Repas"}
           </h2>
           {!hasNoMeals && (
-            <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
               {meals!.length} repas
             </span>
           )}
@@ -129,31 +135,33 @@ export default async function TodayPage({
         ) : (
           <ul className="space-y-2">
             {meals!.map((m) => (
-              <li
-                key={m.id}
-                className="flex items-center justify-between rounded-xl border border-border bg-card p-4"
-              >
-                <div>
-                  <p className="text-sm font-medium">
-                    {m.kind ? labelKind(m.kind) : "Repas"}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(m.consumed_at).toLocaleTimeString("fr-FR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium">
-                    {Math.round(Number(m.total_kcal))} kcal
-                  </p>
-                  <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                    P {Math.round(Number(m.total_protein_g))}g · G{" "}
-                    {Math.round(Number(m.total_carbs_g))}g · L{" "}
-                    {Math.round(Number(m.total_fat_g))}g
-                  </p>
-                </div>
+              <li key={m.id}>
+                <Link
+                  href={`/meal/${m.id}`}
+                  className="flex items-center justify-between rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50 active:bg-muted"
+                >
+                  <div>
+                    <p className="text-sm font-semibold">
+                      {m.kind ? labelKind(m.kind) : "Repas"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(m.consumed_at).toLocaleTimeString("fr-FR", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="tabular text-sm font-semibold">
+                      {Math.round(Number(m.total_kcal))} kcal
+                    </p>
+                    <p className="tabular text-[11px] uppercase tracking-wide text-muted-foreground">
+                      P {Math.round(Number(m.total_protein_g))}g · G{" "}
+                      {Math.round(Number(m.total_carbs_g))}g · L{" "}
+                      {Math.round(Number(m.total_fat_g))}g
+                    </p>
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>
@@ -161,10 +169,10 @@ export default async function TodayPage({
       </section>
 
       {isToday && (
-        <div className="sticky bottom-20 z-0 mt-2 space-y-2">
+        <div className="animate-fade-up-5 sticky bottom-20 z-0 mt-2 space-y-2">
           <Link
             href="/scan"
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent text-sm font-medium text-accent-foreground transition-colors hover:bg-accent/90"
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-accent text-sm font-semibold text-accent-foreground shadow-sm transition-colors hover:bg-accent/90"
           >
             <Camera className="size-4" />
             Scanner un plat
@@ -172,14 +180,14 @@ export default async function TodayPage({
           <div className="grid grid-cols-2 gap-2">
             <Link
               href="/search"
-              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               <Search className="size-4" />
               Rechercher
             </Link>
             <Link
               href="/barcode"
-              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               <ScanBarcode className="size-4" />
               Code-barre
