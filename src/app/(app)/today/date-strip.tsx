@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { isSameDay, last7Days, toDayKey } from "@/lib/date";
-import { cn } from "@/lib/utils";
 
 const SHORT_DAY = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
 
@@ -14,31 +13,64 @@ export function DateStrip({ selected }: Props) {
   const days = last7Days();
 
   return (
-    <nav className="-mx-5 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <nav
+      style={{
+        display: "flex",
+        gap: 8,
+        overflowX: "auto",
+        margin: "0 -18px",
+        padding: "0 18px",
+        scrollbarWidth: "none",
+      }}
+    >
       {days.map((d) => {
         const isToday = isSameDay(d, today);
         const isActive = isSameDay(d, selected);
         const key = toDayKey(d);
+
         return (
           <Link
             key={key}
             href={isToday ? "/today" : `/today?d=${key}`}
-            className={cn(
-              "flex h-16 w-12 shrink-0 flex-col items-center justify-center rounded-xl border text-center transition",
-              isActive
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-card text-foreground hover:border-primary/50",
-            )}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 48,
+              height: 64,
+              flexShrink: 0,
+              borderRadius: 14,
+              textAlign: "center",
+              textDecoration: "none",
+              transition: "transform 0.1s",
+              background: isActive ? "#1A5CFF" : "#fff",
+              boxShadow: isActive
+                ? "0 6px 16px rgba(26,92,255,.28)"
+                : "0 2px 8px rgba(26,26,46,.06)",
+            }}
           >
             <span
-              className={cn(
-                "text-[10px] font-medium uppercase tracking-wide",
-                isActive ? "opacity-80" : "text-muted-foreground",
-              )}
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: ".04em",
+                color: isActive ? "rgba(255,255,255,.75)" : "#9595A8",
+              }}
             >
               {SHORT_DAY[d.getDay()]}
             </span>
-            <span className="text-base font-medium">{d.getDate()}</span>
+            <span
+              style={{
+                fontSize: 16,
+                fontWeight: 700,
+                color: isActive ? "#fff" : "#1A1A2E",
+                marginTop: 2,
+              }}
+            >
+              {d.getDate()}
+            </span>
           </Link>
         );
       })}

@@ -22,8 +22,13 @@ export default async function AppLayout({
   if (!profile?.onboarding_completed_at) redirect("/onboarding");
 
   return (
-    <div className="flex min-h-svh flex-col">
-      <div className="flex-1 pb-16">{children}</div>
+    // app-shell = fond #F7F8FC pleine largeur
+    // app-column = contenu centré max 448 px, ombre sur desktop
+    <div className="app-shell">
+      <div className="app-column">
+        {children}
+      </div>
+      {/* BottomNav est position:fixed, centré, max-width 448px — voir bottom-nav.tsx */}
       <BottomNav />
     </div>
   );

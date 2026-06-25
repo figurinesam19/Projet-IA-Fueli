@@ -1,18 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { Goal, Profile } from "../types";
 
-const OPTIONS: { value: Goal; title: string; desc: string }[] = [
-  { value: "perte", title: "Perte de poids", desc: "Déficit calorique modéré" },
-  { value: "masse", title: "Prise de masse", desc: "Surplus calorique" },
+const OPTIONS: {
+  value: Goal;
+  emoji: string;
+  title: string;
+  desc: string;
+  tint: string;
+}[] = [
+  {
+    value: "perte",
+    emoji: "⚖️",
+    title: "Perte de poids",
+    desc: "Déficit calorique modéré",
+    tint: "#FFF3EC",
+  },
+  {
+    value: "masse",
+    emoji: "💪",
+    title: "Prise de masse",
+    desc: "Surplus calorique",
+    tint: "#EEF3FF",
+  },
   {
     value: "equilibre",
+    emoji: "🎯",
     title: "Équilibre alimentaire",
     desc: "Maintenir mon poids",
+    tint: "#ECFDF5",
   },
 ];
 
@@ -24,55 +41,144 @@ type Props = {
 };
 
 export function StepGoal({ pending, error, defaults, onSubmit }: Props) {
-  const [goal, setGoal] = useState<Goal | undefined>(defaults.goal ?? undefined);
+  const [goal, setGoal] = useState<Goal | undefined>(
+    defaults.goal ?? undefined,
+  );
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <div>
-        <h1 className="text-[22px] font-medium">Ton objectif</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <h1
+          style={{
+            fontSize: 26,
+            fontWeight: 800,
+            letterSpacing: "-.03em",
+            color: "#1A1A2E",
+          }}
+        >
+          Ton objectif
+        </h1>
+        <p
+          style={{
+            fontSize: 14,
+            fontWeight: 500,
+            color: "#9595A8",
+            marginTop: 6,
+          }}
+        >
           On adapte ton apport calorique en fonction.
         </p>
       </div>
+
       <form
-        className="space-y-4"
+        style={{ display: "flex", flexDirection: "column", gap: 14 }}
         onSubmit={(e) => {
           e.preventDefault();
           if (!goal) return;
           onSubmit({ goal });
         }}
       >
-        <RadioGroup
-          value={goal}
-          onValueChange={(v) => setGoal(v as Goal)}
-          className="space-y-2"
-        >
-          {OPTIONS.map((opt) => (
-            <Label
-              key={opt.value}
-              htmlFor={`goal-${opt.value}`}
-              className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-card p-4 has-[:checked]:border-primary has-[:checked]:bg-primary/5"
-            >
-              <RadioGroupItem
-                id={`goal-${opt.value}`}
-                value={opt.value}
-                className="mt-0.5"
-              />
-              <div>
-                <div className="text-sm font-medium">{opt.title}</div>
-                <div className="text-xs text-muted-foreground">{opt.desc}</div>
-              </div>
-            </Label>
-          ))}
-        </RadioGroup>
-        {error && <p className="text-sm text-destructive">{error}</p>}
-        <Button
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {OPTIONS.map((opt) => {
+            const selected = goal === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setGoal(opt.value)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                  padding: "16px 18px",
+                  borderRadius: 18,
+                  border: `2px solid ${selected ? "#1A5CFF" : "#E8E8F0"}`,
+                  background: selected ? "#EEF3FF" : "#fff",
+                  width: "100%",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontFamily: "inherit",
+                  transition: "border-color .15s, background .15s",
+                }}
+              >
+                {/* Emoji dans pastille colorée */}
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 14,
+                    background: selected ? "#dce9ff" : opt.tint,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 24,
+                    flexShrink: 0,
+                    transition: "background .15s",
+                  }}
+                >
+                  {opt.emoji}
+                </div>
+                <div>
+                  <p
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 700,
+                      color: selected ? "#1A5CFF" : "#1A1A2E",
+                      letterSpacing: "-.01em",
+                      transition: "color .15s",
+                    }}
+                  >
+                    {opt.title}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color: selected ? "#4A7CFF" : "#9595A8",
+                      marginTop: 2,
+                      transition: "color .15s",
+                    }}
+                  >
+                    {opt.desc}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {error && (
+          <p style={{ fontSize: 13, fontWeight: 500, color: "#DC2626" }}>
+            {error}
+          </p>
+        )}
+
+        <button
           type="submit"
           disabled={pending || !goal}
-          className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
+          style={{
+            marginTop: 4,
+            width: "100%",
+            padding: "16px",
+            borderRadius: 16,
+            border: "none",
+            background:
+              pending || !goal
+                ? "#E8E8F0"
+                : "linear-gradient(135deg,#FF8540,#FF6B1A)",
+            color: pending || !goal ? "#9595A8" : "#fff",
+            fontSize: 16,
+            fontWeight: 800,
+            fontFamily: "inherit",
+            cursor: pending || !goal ? "not-allowed" : "pointer",
+            letterSpacing: "-.01em",
+            boxShadow:
+              pending || !goal ? "none" : "0 8px 20px -4px rgba(255,107,26,.4)",
+            transition: "background .2s, box-shadow .2s, color .2s",
+          }}
         >
           {pending ? "…" : "Continuer"}
-        </Button>
+        </button>
       </form>
     </div>
   );

@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
 import { deleteAccount } from "./actions";
 
 export function ProfileActions() {
@@ -37,48 +37,104 @@ export function ProfileActions() {
   }
 
   return (
-    <div className="space-y-2">
-      <Button
-        variant="outline"
-        className="w-full"
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {/* Bouton déconnexion */}
+      <button
         onClick={handleLogout}
         disabled={pending}
+        style={{
+          width: "100%",
+          padding: "15px",
+          borderRadius: 16,
+          border: "1.5px solid #E8E8F0",
+          background: "#fff",
+          fontSize: 14,
+          fontWeight: 700,
+          color: "#1A1A2E",
+          fontFamily: "inherit",
+          cursor: pending ? "not-allowed" : "pointer",
+          opacity: pending ? 0.6 : 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          boxShadow: "0 4px 12px rgba(26,26,46,.05)",
+        }}
       >
+        <LogOut size={16} color="#9595A8" />
         Se déconnecter
-      </Button>
+      </button>
 
+      {/* Avertissement avant suppression */}
       {confirmDelete && (
-        <div className="rounded-xl border border-destructive/40 bg-destructive/5 p-3 text-xs leading-relaxed text-destructive">
+        <div
+          style={{
+            background: "#FFF5F5",
+            border: "1.5px solid rgba(220,38,38,.2)",
+            borderRadius: 14,
+            padding: "12px 14px",
+            fontSize: 13,
+            fontWeight: 500,
+            color: "#B91C1C",
+            lineHeight: 1.55,
+          }}
+        >
           Cette action est <strong>irréversible</strong>. Toutes tes données
           (profil, repas, historique) seront définitivement supprimées des
           serveurs Fueli.
         </div>
       )}
 
-      <Button
-        variant="ghost"
-        className="w-full text-destructive hover:text-destructive"
+      {/* Bouton suppression compte */}
+      <button
         onClick={handleDelete}
         disabled={pending}
+        style={{
+          width: "100%",
+          padding: "13px",
+          borderRadius: 16,
+          border: "none",
+          background: "transparent",
+          fontSize: 13,
+          fontWeight: 700,
+          color: "#DC2626",
+          fontFamily: "inherit",
+          cursor: pending ? "not-allowed" : "pointer",
+          opacity: pending ? 0.6 : 1,
+        }}
       >
         {pending && confirmDelete
           ? "Suppression…"
           : confirmDelete
             ? "Confirmer la suppression"
             : "Supprimer mon compte"}
-      </Button>
+      </button>
 
       {confirmDelete && !pending && (
         <button
           type="button"
           onClick={() => setConfirmDelete(false)}
-          className="block w-full text-center text-xs text-muted-foreground hover:text-foreground"
+          style={{
+            background: "none",
+            border: "none",
+            fontSize: 12,
+            fontWeight: 500,
+            color: "#9595A8",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            padding: "4px",
+            textAlign: "center",
+          }}
         >
           Annuler
         </button>
       )}
 
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && (
+        <p style={{ fontSize: 12, color: "#DC2626", textAlign: "center" }}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }

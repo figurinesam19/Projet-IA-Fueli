@@ -3,9 +3,6 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
   const router = useRouter();
@@ -25,7 +22,7 @@ export function LoginForm() {
         password,
       });
       if (error) {
-        setError("Identifiants invalides.");
+        setError("Email ou mot de passe incorrect.");
         return;
       }
       router.replace("/");
@@ -34,35 +31,76 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
+    <form
+      onSubmit={onSubmit}
+      style={{ display: "flex", flexDirection: "column", gap: 14 }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <label
+          htmlFor="email"
+          style={{ fontSize: 13, fontWeight: 700, color: "#3A3A52" }}
+        >
+          Email
+        </label>
+        <input
           id="email"
           name="email"
           type="email"
           autoComplete="email"
+          placeholder="toi@email.com"
           required
+          className="fu-input"
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">Mot de passe</Label>
-        <Input
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <label
+          htmlFor="password"
+          style={{ fontSize: 13, fontWeight: 700, color: "#3A3A52" }}
+        >
+          Mot de passe
+        </label>
+        <input
           id="password"
           name="password"
           type="password"
           autoComplete="current-password"
+          placeholder="••••••••"
           required
+          className="fu-input"
         />
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button
+
+      {error && (
+        <p style={{ fontSize: 13, fontWeight: 500, color: "#DC2626" }}>
+          {error}
+        </p>
+      )}
+
+      <button
         type="submit"
         disabled={pending}
-        className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
+        style={{
+          marginTop: 4,
+          width: "100%",
+          padding: "16px",
+          borderRadius: 16,
+          border: "none",
+          background: pending
+            ? "#E8E8F0"
+            : "linear-gradient(135deg,#FF8540,#FF6B1A)",
+          color: pending ? "#9595A8" : "#fff",
+          fontSize: 16,
+          fontWeight: 800,
+          fontFamily: "inherit",
+          cursor: pending ? "not-allowed" : "pointer",
+          letterSpacing: "-.01em",
+          boxShadow: pending ? "none" : "0 8px 20px -4px rgba(255,107,26,.4)",
+          transition: "background .2s, box-shadow .2s, color .2s",
+        }}
       >
         {pending ? "Connexion…" : "Se connecter"}
-      </Button>
+      </button>
     </form>
   );
 }

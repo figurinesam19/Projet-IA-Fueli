@@ -71,10 +71,13 @@
   --border: #e2e5ee;
   --input: #e2e5ee;
   --ring: #1a5cff;
-  /* Macros */
+  /* Macros — couleurs extraites du design system Fueli */
   --color-macro-proteins: #1a5cff;
-  --color-macro-fats: #ff6b1a;
-  --color-macro-carbs: #f0a500;
+  --color-macro-proteins-bg: #eef3ff;
+  --color-macro-carbs: #ff6b1a;
+  --color-macro-carbs-bg: #fff3ec;
+  --color-macro-fats: #d98a1a;
+  --color-macro-fats-bg: #fff7e8;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -126,6 +129,11 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@keyframes fueliBob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
 @keyframes fu-fade-up {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -166,5 +174,66 @@
   button:not(:disabled),
   a {
     @apply transition-transform duration-100 active:scale-[0.97];
+  }
+}
+
+/* ─── Inputs design system ───────────────────────────────────────────────── */
+
+.fu-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #e8e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #1a1a2e;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+}
+.fu-input:focus {
+  border-color: #1a5cff;
+  box-shadow: 0 0 0 3px rgba(26, 92, 255, 0.12);
+}
+.fu-input::placeholder {
+  color: #c4c4d1;
+  font-weight: 400;
+}
+/* Supprime les flèches sur les inputs number */
+.fu-input::-webkit-outer-spin-button,
+.fu-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.fu-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ─── Responsive shell ────────────────────────────────────────────────────── */
+
+/* Fond pleine largeur */
+.app-shell {
+  background: #f7f8fc;
+  min-height: 100svh;
+}
+
+/* Colonne centrale — max 448 px */
+.app-column {
+  max-width: 448px;
+  margin: 0 auto;
+  min-height: 100svh;
+  position: relative;
+  background: #f7f8fc;
+}
+
+/* Sur tablette / desktop : légère élévation pour délimiter la colonne */
+@media (min-width: 520px) {
+  .app-column {
+    box-shadow:
+      0 0 0 1px rgba(26, 26, 46, 0.05),
+      0 24px 64px rgba(26, 26, 46, 0.06);
   }
 }
