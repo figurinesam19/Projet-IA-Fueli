@@ -1,6 +1,6 @@
 export default function BarcodeLoading() {
   return (
-    <main style={{ maxWidth: 448, margin: "0 auto", padding: "0 18px 120px", display: "flex", flexDirection: "column", gap: 16 }}>
+    <main className="page-bottom" style={{ maxWidth: 448, margin: "0 auto", padding: "0 18px 0", display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ padding: "14px 2px 4px" }}>
         <div className="skeleton" style={{ width: 180, height: 26 }} />
       </div>

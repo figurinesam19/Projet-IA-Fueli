@@ -1,6 +1,6 @@
 export default function TodayLoading() {
   return (
-    <main style={{ maxWidth: 448, margin: "0 auto", padding: "0 18px 200px", display: "flex", flexDirection: "column", gap: 14 }}>
+    <main className="page-bottom" style={{ maxWidth: 448, margin: "0 auto", padding: "0 18px 0", display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 2px 4px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>

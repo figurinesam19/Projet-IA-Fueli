@@ -129,6 +129,11 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Padding bottom = hauteur bottom-nav (70px) + safe area iPhone + marge confort */
+.page-bottom {
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+}
+
 @keyframes sk-pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: .45; }

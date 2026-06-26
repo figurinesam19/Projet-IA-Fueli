@@ -116,13 +116,14 @@ export default async function TodayPage({
   return (
     <>
       <main
+        className="page-bottom"
         style={{
           maxWidth: 448,
           margin: "0 auto",
           display: "flex",
           flexDirection: "column",
           gap: 14,
-          padding: "0 18px 200px",
+          padding: "0 18px 0",
         }}
       >
         {/* ===== HEADER ===== */}

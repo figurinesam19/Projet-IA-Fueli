@@ -59,10 +59,11 @@ export default async function ProfilePage() {
 
   return (
     <main
+      className="page-bottom"
       style={{
         maxWidth: 448,
         margin: "0 auto",
-        padding: "0 18px 120px",
+        padding: "0 18px 0",
         display: "flex",
         flexDirection: "column",
         gap: 14,

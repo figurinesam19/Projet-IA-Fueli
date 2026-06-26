@@ -34,7 +34,7 @@ export function BottomNav() {
           display: "flex",
           justifyContent: "space-around",
           alignItems: "center",
-          padding: "6px 8px 10px",
+          padding: "6px 8px calc(10px + env(safe-area-inset-bottom, 0px))",
           margin: 0,
           listStyle: "none",
         }}

@@ -50,7 +50,7 @@ export default function LearnPage() {
         margin: "0 auto",
         display: "flex",
         flexDirection: "column",
-        padding: "0 18px 120px",
+        padding: "0 18px 0",
       }}
     >
       {/* ===== HEADER ===== */}

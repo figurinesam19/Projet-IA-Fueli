@@ -64,7 +64,7 @@ export function BarcodeFlow() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col gap-5 p-5">
+    <main className="page-bottom mx-auto flex w-full max-w-md flex-col gap-5 px-5 pt-5">
       <header className="flex items-center justify-between">
         <h1 className="text-[22px] font-medium">Scanner un code-barre</h1>
         <button

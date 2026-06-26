@@ -65,7 +65,7 @@ export function SearchFlow() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col gap-4 p-5">
+    <main className="page-bottom mx-auto flex w-full max-w-md flex-col gap-4 px-5 pt-5">
       <header className="flex items-center justify-between">
         <h1 className="text-[22px] font-medium">Rechercher un aliment</h1>
         <button

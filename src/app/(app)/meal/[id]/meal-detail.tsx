@@ -94,7 +94,7 @@ export function MealDetail({ meal, items }: { meal: Meal; items: MealItem[] }) {
   });
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col gap-5 p-5">
+    <main className="page-bottom mx-auto flex w-full max-w-md flex-col gap-5 px-5 pt-5">
       <header className="flex items-center gap-3">
         <button
           type="button"
