@@ -131,7 +131,7 @@
 
 /* Padding bottom = hauteur bottom-nav (70px) + safe area iPhone + marge confort */
 .page-bottom {
-  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
 }
 
 @keyframes sk-pulse {

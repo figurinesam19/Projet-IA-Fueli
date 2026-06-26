@@ -10,8 +10,13 @@ const TABS = [
   { href: "/profile", label: "Profil",       icon: User },
 ];
 
+// Pages de flow concentré : pas de nav pour ne pas masquer les boutons
+const NO_NAV_PREFIXES = ["/scan", "/barcode", "/search"];
+
 export function BottomNav() {
   const pathname = usePathname();
+
+  if (NO_NAV_PREFIXES.some((p) => pathname.startsWith(p))) return null;
 
   return (
     <nav
