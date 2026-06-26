@@ -10,13 +10,13 @@ const TABS = [
   { href: "/profile", label: "Profil",       icon: User },
 ];
 
-// Pages de flow concentré : pas de nav pour ne pas masquer les boutons
-const NO_NAV_PREFIXES = ["/scan", "/barcode", "/search"];
+// La bottom nav s'affiche uniquement sur les 3 onglets principaux
+const NAV_ONLY_PATHS = ["/today", "/learn", "/profile"];
 
 export function BottomNav() {
   const pathname = usePathname();
 
-  if (NO_NAV_PREFIXES.some((p) => pathname.startsWith(p))) return null;
+  if (!NAV_ONLY_PATHS.includes(pathname)) return null;
 
   return (
     <nav
