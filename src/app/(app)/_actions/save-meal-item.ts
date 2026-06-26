@@ -14,7 +14,7 @@ export type SaveMealItemInput = {
   fat_g: number;
   ciqual_code?: string | null;
   off_barcode?: string | null;
-  kind?: "petit_dejeuner" | "dejeuner" | "diner" | "collation" | null;
+  kind?: "petit_dejeuner" | "dejeuner" | "diner" | null;
 };
 
 /**

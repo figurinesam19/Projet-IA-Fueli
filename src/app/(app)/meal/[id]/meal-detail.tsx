@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, Trash2 } from "lucide-react";
 import { deleteMeal, deleteMealItem, updateMealKind } from "./actions";
 
-type MealKind = "petit_dejeuner" | "dejeuner" | "diner" | "collation";
+type MealKind = "petit_dejeuner" | "dejeuner" | "diner";
 
 type Meal = {
   id: string;
@@ -32,16 +32,14 @@ type MealItem = {
 const KIND_LABELS: Record<MealKind, string> = {
   petit_dejeuner: "Petit-déjeuner",
   dejeuner: "Déjeuner",
-  diner: "Dîner",
-  collation: "Collation",
+  diner: "Repas du soir",
 };
 
 const KIND_OPTIONS: { value: MealKind | ""; label: string }[] = [
   { value: "", label: "Non défini" },
   { value: "petit_dejeuner", label: "Petit-déjeuner" },
   { value: "dejeuner", label: "Déjeuner" },
-  { value: "diner", label: "Dîner" },
-  { value: "collation", label: "Collation" },
+  { value: "diner", label: "Repas du soir" },
 ];
 
 function formatSource(source: string | null) {

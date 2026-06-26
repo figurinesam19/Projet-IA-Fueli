@@ -50,8 +50,23 @@ export async function updateSession(request: NextRequest) {
 
   if (user && (pathname === "/login" || pathname === "/signup")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/onboarding";
+    url.pathname = "/today";
     return NextResponse.redirect(url);
+  }
+
+  // Vérification onboarding pour les routes protégées (hors /onboarding)
+  if (user && !isPublic && !pathname.startsWith("/onboarding")) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarding_completed_at")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile?.onboarding_completed_at) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/onboarding";
+      return NextResponse.redirect(url);
+    }
   }
 
   return response;

@@ -15,7 +15,7 @@ export type ScanItem = {
 
 export async function saveScannedMeal(input: {
   items: ScanItem[];
-  kind: "petit_dejeuner" | "dejeuner" | "diner" | "collation" | null;
+  kind: "petit_dejeuner" | "dejeuner" | "diner" | null;
 }) {
   const supabase = await createClient();
   const {

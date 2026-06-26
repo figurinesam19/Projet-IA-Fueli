@@ -13,13 +13,12 @@ import { DateStrip } from "./date-strip";
 import { ScanFab } from "./scan-fab";
 
 // Ordre d'affichage et métadonnées visuelles par type de repas
-const KIND_ORDER = ["petit_dejeuner", "dejeuner", "diner", "collation"] as const;
+const KIND_ORDER = ["petit_dejeuner", "dejeuner", "diner"] as const;
 
 const KIND_META: Record<string, { emoji: string; tint: string; label: string }> = {
   petit_dejeuner: { emoji: "🌅", tint: "#FFF7E8", label: "Petit-déjeuner" },
   dejeuner:       { emoji: "☀️",  tint: "#EEF3FF", label: "Déjeuner" },
-  diner:          { emoji: "🌙",  tint: "#F1ECFF", label: "Dîner" },
-  collation:      { emoji: "🍎",  tint: "#FFF3EC", label: "Collation" },
+  diner:          { emoji: "🌙",  tint: "#F1ECFF", label: "Repas du soir" },
 };
 
 function formatDate(d: Date) {

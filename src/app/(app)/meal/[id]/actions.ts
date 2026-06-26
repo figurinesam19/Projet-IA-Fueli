@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function updateMealKind(
   mealId: string,
-  kind: "petit_dejeuner" | "dejeuner" | "diner" | "collation" | null,
+  kind: "petit_dejeuner" | "dejeuner" | "diner" | null,
 ) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
