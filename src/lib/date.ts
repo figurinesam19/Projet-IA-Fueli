@@ -44,3 +44,17 @@ export function last7Days(): Date[] {
   }
   return days;
 }
+
+/** Retourne les 7 jours de la semaine courante, du lundi au dimanche. */
+export function currentWeek(): Date[] {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dow = today.getDay(); // 0=dim, 1=lun, …, 6=sam
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { isSameDay, last7Days, toDayKey } from "@/lib/date";
+import { isSameDay, currentWeek, toDayKey } from "@/lib/date";
 
 const SHORT_DAY = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
 
@@ -10,7 +10,7 @@ type Props = {
 export function DateStrip({ selected }: Props) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const days = last7Days();
+  const days = currentWeek();
 
   return (
     <nav
@@ -26,12 +26,11 @@ export function DateStrip({ selected }: Props) {
       {days.map((d) => {
         const isToday = isSameDay(d, today);
         const isActive = isSameDay(d, selected);
+        const isFuture = d > today;
         const key = toDayKey(d);
 
-        return (
-          <Link
-            key={key}
-            href={isToday ? "/today" : `/today?d=${key}`}
+        const cell = (
+          <div
             style={{
               display: "flex",
               flexDirection: "column",
@@ -42,12 +41,13 @@ export function DateStrip({ selected }: Props) {
               flexShrink: 0,
               borderRadius: 14,
               textAlign: "center",
-              textDecoration: "none",
-              transition: "transform 0.1s",
               background: isActive ? "#1A5CFF" : "#fff",
               boxShadow: isActive
                 ? "0 6px 16px rgba(26,92,255,.28)"
                 : "0 2px 8px rgba(26,26,46,.06)",
+              opacity: isFuture ? 0.35 : 1,
+              cursor: isFuture ? "default" : "pointer",
+              transition: "transform 0.1s",
             }}
           >
             <span
@@ -71,6 +71,18 @@ export function DateStrip({ selected }: Props) {
             >
               {d.getDate()}
             </span>
+          </div>
+        );
+
+        if (isFuture) return <div key={key}>{cell}</div>;
+
+        return (
+          <Link
+            key={key}
+            href={isToday ? "/today" : `/today?d=${key}`}
+            style={{ textDecoration: "none" }}
+          >
+            {cell}
           </Link>
         );
       })}

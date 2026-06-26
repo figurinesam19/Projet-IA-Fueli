@@ -6,7 +6,7 @@ import {
   emptyConsumption,
   type DailyConsumption,
 } from "@/lib/nutrition";
-import { dayBounds, isSameDay, parseDayKey } from "@/lib/date";
+import { currentWeek, dayBounds, isSameDay, parseDayKey } from "@/lib/date";
 import { DailyCard } from "./daily-card";
 import { MacroBars } from "./macro-bars";
 import { DateStrip } from "./date-strip";
@@ -51,11 +51,11 @@ export default async function TodayPage({
   today.setHours(0, 0, 0, 0);
   const requested = d ? parseDayKey(d) : null;
 
-  const minDate = new Date(today);
-  minDate.setDate(today.getDate() - 6);
+  const week = currentWeek();
+  const weekStart = week[0]; // lundi
 
   let selected = today;
-  if (requested && requested >= minDate && requested <= today) {
+  if (requested && requested >= weekStart && requested <= today) {
     selected = requested;
   }
   const isToday = isSameDay(selected, today);
