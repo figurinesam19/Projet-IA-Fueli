@@ -67,7 +67,7 @@ export default async function TodayPage({
     supabase.from("profiles").select("*").eq("id", user!.id).single(),
     supabase
       .from("meals")
-      .select("*")
+      .select("*, meal_items(name)")
       .eq("user_id", user!.id)
       .gte("consumed_at", start.toISOString())
       .lt("consumed_at", end.toISOString())
@@ -338,7 +338,7 @@ export default async function TodayPage({
                               textOverflow: "ellipsis",
                             }}
                           >
-                            {group.meta.label}
+                            {(m as { meal_items?: { name: string }[] }).meal_items?.map(i => i.name).join(", ") || group.meta.label}
                           </p>
                           <p style={{ fontSize: 12, fontWeight: 500, color: "#9595A8", marginTop: 2 }}>
                             P {Math.round(Number(m.total_protein_g))}g · G {Math.round(Number(m.total_carbs_g))}g · L {Math.round(Number(m.total_fat_g))}g
