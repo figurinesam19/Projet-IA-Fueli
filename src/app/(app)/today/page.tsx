@@ -43,19 +43,13 @@ export default async function TodayPage({
   searchParams: Promise<{ d?: string }>;
 }) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user!.id)
-    .single();
+  const [{ data: { user } }, { d }] = await Promise.all([
+    supabase.auth.getUser(),
+    searchParams,
+  ]);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const { d } = await searchParams;
   const requested = d ? parseDayKey(d) : null;
 
   const minDate = new Date(today);
@@ -68,13 +62,17 @@ export default async function TodayPage({
   const isToday = isSameDay(selected, today);
 
   const { start, end } = dayBounds(selected);
-  const { data: meals } = await supabase
-    .from("meals")
-    .select("*")
-    .eq("user_id", user!.id)
-    .gte("consumed_at", start.toISOString())
-    .lt("consumed_at", end.toISOString())
-    .order("consumed_at", { ascending: true }); // ASC pour garder l'ordre naturel dans les groupes
+
+  const [{ data: profile }, { data: meals }] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", user!.id).single(),
+    supabase
+      .from("meals")
+      .select("*")
+      .eq("user_id", user!.id)
+      .gte("consumed_at", start.toISOString())
+      .lt("consumed_at", end.toISOString())
+      .order("consumed_at", { ascending: true }),
+  ]); // ASC pour garder l'ordre naturel dans les groupes
 
   const consumption: DailyConsumption = (meals ?? []).reduce(
     (acc, m) => ({

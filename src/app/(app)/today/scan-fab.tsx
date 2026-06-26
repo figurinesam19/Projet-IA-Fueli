@@ -35,9 +35,9 @@ export function ScanFab() {
           fontSize: 15,
           fontWeight: 800,
           letterSpacing: "-.01em",
-          boxShadow: "0 12px 26px -4px rgba(255,107,26,.5)",
+          boxShadow: "0 8px 20px -4px rgba(255,107,26,.55), 0 0 0 0 rgba(255,107,26,.0)",
           textDecoration: "none",
-          animation: "fueliBob 3s ease-in-out infinite",
+          animation: "fueliBob 3s ease-in-out infinite, fueliglow 2.4s ease-in-out infinite",
           whiteSpace: "nowrap",
         }}
       >
