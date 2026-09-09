@@ -45,6 +45,7 @@ export default function LearnPage() {
 
   return (
     <main
+      className="page-bottom"
       style={{
         maxWidth: 448,
         margin: "0 auto",

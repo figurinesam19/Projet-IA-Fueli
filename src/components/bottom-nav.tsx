@@ -10,7 +10,6 @@ const TABS = [
   { href: "/profile", label: "Profil",       icon: User },
 ];
 
-// La bottom nav s'affiche uniquement sur les 3 onglets principaux
 const NAV_ONLY_PATHS = ["/today", "/learn", "/profile"];
 
 export function BottomNav() {
@@ -22,16 +21,18 @@ export function BottomNav() {
     <nav
       style={{
         position: "fixed",
-        bottom: 0,
+        bottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
         left: "50%",
         transform: "translateX(-50%)",
-        width: "100%",
-        maxWidth: 448,
+        width: "calc(100% - 32px)",
+        maxWidth: 416,
         zIndex: 100,
-        background: "rgba(255,255,255,.88)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        borderTop: "1px solid rgba(26,26,46,.06)",
+        background: "rgba(255,255,255,.97)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderRadius: 28,
+        boxShadow:
+          "0 8px 32px rgba(26,26,46,.13), 0 2px 8px rgba(26,26,46,.06), 0 0 0 1px rgba(26,26,46,.04)",
       }}
     >
       <ul
@@ -39,7 +40,7 @@ export function BottomNav() {
           display: "flex",
           justifyContent: "space-around",
           alignItems: "center",
-          padding: "6px 8px calc(10px + env(safe-area-inset-bottom, 0px))",
+          padding: "8px 6px",
           margin: 0,
           listStyle: "none",
         }}
@@ -49,40 +50,28 @@ export function BottomNav() {
             pathname === tab.href || pathname.startsWith(`${tab.href}/`);
           const Icon = tab.icon;
           return (
-            <li key={tab.href} style={{ flex: 1 }}>
+            <li key={tab.href} style={{ flex: 1, display: "flex", justifyContent: "center" }}>
               <Link
                 href={tab.href}
                 style={{
-                  display: "flex",
+                  display: "inline-flex",
                   flexDirection: "column",
                   alignItems: "center",
                   gap: 3,
                   textDecoration: "none",
-                  padding: "6px 4px",
+                  padding: "7px 18px",
+                  borderRadius: 18,
+                  background: active ? "#EEF3FF" : "transparent",
                   color: active ? "#1A5CFF" : "#9595A8",
-                  transition: "color .15s",
+                  transition: "background .2s ease, color .2s ease",
                 }}
               >
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 42,
-                    height: 30,
-                    borderRadius: 12,
-                    background: active ? "#EEF3FF" : "transparent",
-                    transition: "background .15s",
-                  }}
-                >
-                  <Icon size={20} />
-                </span>
+                <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
                 <span
                   style={{
                     fontSize: 10,
                     fontWeight: 700,
-                    letterSpacing: ".04em",
-                    textTransform: "uppercase",
+                    letterSpacing: ".025em",
                   }}
                 >
                   {tab.label}
