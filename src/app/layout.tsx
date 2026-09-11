@@ -6,6 +6,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: "#1A5CFF",
 };
 
 const inter = Inter({
@@ -17,6 +18,15 @@ export const metadata: Metadata = {
   title: "Fueli — Comprends ce que tu manges",
   description:
     "Tracker nutritionnel simple : photographie tes repas et obtiens instantanément calories et macros.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Fueli",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
