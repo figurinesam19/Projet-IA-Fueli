@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, Home, User } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const TABS = [
   { href: "/today",   label: "Aujourd'hui", icon: Home },
@@ -12,8 +13,37 @@ const TABS = [
 
 const NAV_ONLY_PATHS = ["/today", "/learn", "/profile"];
 
+function useNavVisible() {
+  const [visible, setVisible] = useState(true);
+  const lastY = useRef(0);
+  const ticking = useRef(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (ticking.current) return;
+      ticking.current = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const delta = y - lastY.current;
+        if (Math.abs(delta) > 6) {
+          // Cache quand on scroll vers le bas (et qu'on est descendu > 60px)
+          // Réaffiche quand on scroll vers le haut
+          setVisible(delta < 0 || y < 60);
+          lastY.current = y;
+        }
+        ticking.current = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return visible;
+}
+
 export function BottomNav() {
   const pathname = usePathname();
+  const visible = useNavVisible();
 
   if (!NAV_ONLY_PATHS.includes(pathname)) return null;
 
@@ -23,7 +53,11 @@ export function BottomNav() {
         position: "fixed",
         bottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
         left: "50%",
-        transform: "translateX(-50%)",
+        // Quand visible : position normale + scale 1
+        // Quand caché  : glisse vers le bas + rétrécit
+        transform: visible
+          ? "translateX(-50%) translateY(0) scale(1)"
+          : "translateX(-50%) translateY(calc(100% + 24px)) scale(0.88)",
         width: "calc(100% - 32px)",
         maxWidth: 416,
         zIndex: 100,
@@ -33,6 +67,7 @@ export function BottomNav() {
         borderRadius: 28,
         boxShadow:
           "0 8px 32px rgba(26,26,46,.13), 0 2px 8px rgba(26,26,46,.06), 0 0 0 1px rgba(26,26,46,.04)",
+        transition: "transform 0.38s cubic-bezier(0.22, 1, 0.36, 1)",
       }}
     >
       <ul
