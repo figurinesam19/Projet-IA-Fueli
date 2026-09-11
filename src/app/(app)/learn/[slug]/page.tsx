@@ -38,7 +38,7 @@ export default async function ArticlePage({
       style={{
         maxWidth: 448,
         margin: "0 auto",
-        padding: "0 18px 0",
+        padding: "0 18px 40px",
         display: "flex",
         flexDirection: "column",
         gap: 0,

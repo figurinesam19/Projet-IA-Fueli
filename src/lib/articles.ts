@@ -10,7 +10,8 @@ export type ArticleBlock =
   | { type: "p"; text: string }
   | { type: "h2"; text: string }
   | { type: "ul"; items: string[] }
-  | { type: "quote"; text: string };
+  | { type: "quote"; text: string }
+  | { type: "img"; src: string; alt: string };
 
 export type ArticleCategory = "bases" | "mindset" | "nutrition" | "recettes";
 
@@ -47,6 +48,7 @@ export const ARTICLES: Article[] = [
         type: "p",
         text: "Les rayons « bien-être » sont remplis de produits avec un emballage rassurant. Le problème : ces signaux marketing ne disent rien sur la composition réelle.",
       },
+      { type: "img", src: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=600&h=220&fit=crop&q=80", alt: "Granola et produits transformés soi-disant sains" },
       { type: "h2", text: "1. Le granola du petit-déjeuner" },
       {
         type: "p",
@@ -92,6 +94,7 @@ export const ARTICLES: Article[] = [
         type: "p",
         text: "Ton corps brûle un certain nombre de calories par jour, même au repos. Pour changer ton poids, tu joues sur l'équilibre entre ce que tu consommes et ce que tu dépenses.",
       },
+      { type: "img", src: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&h=220&fit=crop&q=80", alt: "Préparation de repas équilibrés" },
       { type: "h2", text: "Le déficit calorique pour perdre du poids" },
       {
         type: "p",
@@ -131,6 +134,7 @@ export const ARTICLES: Article[] = [
         type: "p",
         text: "Si tu t'entraînes 3-4 fois par semaine, voici les confusions les plus fréquentes — pas pour culpabiliser, pour gagner du temps.",
       },
+      { type: "img", src: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=220&fit=crop&q=80", alt: "Salle de sport et haltères" },
       { type: "h2", text: "« Plus de protéines = plus de muscle »" },
       {
         type: "p",
@@ -171,6 +175,7 @@ export const ARTICLES: Article[] = [
         type: "p",
         text: "Macros = macronutriments. Trois familles : protéines, glucides, lipides. Chacune fait un travail différent. Comprendre ça, c'est comprendre pourquoi on parle de « répartition », pas juste de calories.",
       },
+      { type: "img", src: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=220&fit=crop&q=80", alt: "Assiette colorée avec protéines, glucides et légumes" },
       { type: "h2", text: "Protéines — 4 kcal/g" },
       {
         type: "p",
@@ -212,6 +217,7 @@ export const ARTICLES: Article[] = [
         type: "p",
         text: "On parle tout le temps de calories, jamais d'eau. Pourtant l'hydratation influence directement l'énergie, la faim et les performances — que tu fasses du sport ou non.",
       },
+      { type: "img", src: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&h=220&fit=crop&q=80", alt: "Verre d'eau fraîche" },
       { type: "h2", text: "Combien d'eau boire ?" },
       {
         type: "p",
@@ -252,6 +258,7 @@ export const ARTICLES: Article[] = [
         type: "p",
         text: "Un petit-déjeuner riche en protéines réduit les fringales de milieu de matinée et stabilise la glycémie. Objectif : [[au moins 20g de protéines]] au réveil. Voici 5 options rapides.",
       },
+      { type: "img", src: "https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&h=220&fit=crop&q=80", alt: "Petit-déjeuner avec œufs et toasts" },
       { type: "h2", text: "1. Bowl yaourt grec & fruits" },
       {
         type: "p",

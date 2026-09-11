@@ -2,24 +2,26 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, X } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { compressImage } from "@/lib/image";
 import { saveScannedMeal, type ScanItem } from "./actions";
 import { ReviewItems } from "./review-items";
 import { CameraCapture } from "./camera-capture";
 
+type MealKind = "petit_dejeuner" | "dejeuner" | "diner";
 type Stage = "capture" | "analyzing" | "review";
 
 export function ScanFlow() {
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
 
-  const [stage, setStage] = useState<Stage>("capture");
+  const [stage, setStage]         = useState<Stage>("capture");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [items, setItems] = useState<ScanItem[]>([]);
+  const [items, setItems]         = useState<ScanItem[]>([]);
   const [confidence, setConfidence] = useState<"high" | "medium" | "low" | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [pending, start] = useTransition();
+  const [kind, setKind]           = useState<MealKind | null>(null);
+  const [error, setError]         = useState<string | null>(null);
+  const [pending, start]          = useTransition();
 
   async function handleFile(file: File) {
     setError(null);
@@ -32,7 +34,7 @@ export function ScanFlow() {
       const fd = new FormData();
       fd.append("image", blob, "meal.jpg");
 
-      const res = await fetch("/api/scan", { method: "POST", body: fd });
+      const res  = await fetch("/api/scan", { method: "POST", body: fd });
       const json = await res.json();
       if (!res.ok) {
         setError(json.error || "Erreur d'analyse");
@@ -62,30 +64,69 @@ export function ScanFlow() {
     setConfidence(null);
     setPreviewUrl(null);
     setError(null);
+    setKind(null);
     setStage("capture");
   }
 
   function handleSave(items: ScanItem[]) {
     start(async () => {
-      const result = await saveScannedMeal({ items, kind: null });
+      const result = await saveScannedMeal({ items, kind });
       if (result?.error) setError(result.error);
     });
   }
 
   return (
-    <main className="page-bottom mx-auto flex w-full max-w-md flex-col gap-5 px-5 pt-5">
-      <header className="flex items-center justify-between">
-        <h1 className="text-[22px] font-medium">
-          {stage === "review" ? "Valider le repas" : "Scanner un plat"}
-        </h1>
+    <main
+      className="page-bottom"
+      style={{
+        maxWidth: 448,
+        margin: "0 auto",
+        padding: "0 18px 0",
+        display: "flex",
+        flexDirection: "column",
+        gap: 14,
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "14px 0 4px",
+        }}
+      >
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-md p-1 text-muted-foreground hover:text-foreground"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 14,
+            background: "#fff",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 2px 8px rgba(26,26,46,.08)",
+            color: "#6B6B82",
+            flexShrink: 0,
+          }}
         >
-          <X className="size-5" />
+          <ArrowLeft size={18} />
         </button>
-      </header>
+        <h1
+          style={{
+            fontSize: 20,
+            fontWeight: 800,
+            letterSpacing: "-.02em",
+            color: "#1A1A2E",
+          }}
+        >
+          {stage === "review" ? "Valider le repas" : "Scanner un plat"}
+        </h1>
+      </div>
 
       {/* Input galerie caché */}
       <input
@@ -101,28 +142,58 @@ export function ScanFlow() {
       />
 
       {stage === "capture" && (
-        <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <p style={{ fontSize: 14, fontWeight: 500, color: "#9595A8", padding: "0 2px" }}>
             Cadre ton repas bien au centre, vue de dessus si possible.
           </p>
           <CameraCapture onCapture={handleFile} onGallery={openGallery} />
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && (
+            <p style={{ fontSize: 13, fontWeight: 600, color: "#E5150A", padding: "0 2px" }}>
+              {error}
+            </p>
+          )}
         </div>
       )}
 
       {stage === "analyzing" && (
-        <div className="space-y-4">
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {previewUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={previewUrl}
               alt="Repas"
-              className="aspect-square w-full rounded-xl object-cover"
+              style={{
+                width: "100%",
+                aspectRatio: "16/9",
+                objectFit: "cover",
+                borderRadius: 18,
+                display: "block",
+              }}
             />
           )}
-          <div className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card p-4 text-sm">
-            <Loader2 className="size-4 animate-spin text-primary" />
-            <span>Analyse en cours…</span>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              background: "#fff",
+              borderRadius: 16,
+              padding: 18,
+              boxShadow: "0 4px 12px rgba(26,26,46,.06)",
+              fontSize: 14,
+              fontWeight: 600,
+              color: "#3A3A52",
+            }}
+          >
+            <Loader2
+              size={18}
+              style={{
+                color: "#1A5CFF",
+                animation: "spin 1s linear infinite",
+              }}
+            />
+            Analyse IA en cours…
           </div>
         </div>
       )}
@@ -132,7 +203,9 @@ export function ScanFlow() {
           previewUrl={previewUrl}
           confidence={confidence}
           items={items}
+          kind={kind}
           onChange={setItems}
+          onKindChange={setKind}
           onCancel={reset}
           onSave={handleSave}
           pending={pending}

@@ -250,18 +250,19 @@ export default async function TodayPage({
             <div
               style={{
                 background: "#fff",
-                borderRadius: 18,
-                border: "1.5px dashed #D6E4FF",
-                padding: "24px 16px",
+                borderRadius: 20,
+                padding: "32px 20px 28px",
                 textAlign: "center",
+                boxShadow: "0 6px 16px rgba(26,26,46,.05)",
               }}
             >
-              <p style={{ fontSize: 14, fontWeight: 600, color: "#1A5CFF" }}>
-                {isToday ? "Aucun repas aujourd'hui" : "Aucun repas enregistré ce jour."}
+              <div style={{ fontSize: 48, lineHeight: 1, marginBottom: 12 }}>🍽️</div>
+              <p style={{ fontSize: 15, fontWeight: 700, letterSpacing: "-.01em", color: "#1A1A2E" }}>
+                {isToday ? "Première bouchée du jour ?" : "Aucun repas ce jour-là"}
               </p>
               {isToday && (
-                <p style={{ marginTop: 4, fontSize: 12, fontWeight: 500, color: "#9595A8" }}>
-                  Scanne ton premier plat pour démarrer la journée.
+                <p style={{ marginTop: 6, fontSize: 13, fontWeight: 500, color: "#9595A8", lineHeight: 1.5 }}>
+                  Scanne un plat, recherche un aliment<br />ou entre un code-barre ci-dessous.
                 </p>
               )}
             </div>
@@ -378,16 +379,15 @@ export default async function TodayPage({
               href="/search"
               style={{
                 display: "inline-flex",
-                height: 48,
+                height: 50,
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 8,
                 borderRadius: 16,
-                background: "#fff",
-                boxShadow: "0 4px 12px rgba(26,26,46,.06)",
+                background: "#EEF3FF",
                 fontSize: 13,
                 fontWeight: 700,
-                color: "#1A1A2E",
+                color: "#1A5CFF",
                 textDecoration: "none",
               }}
             >
@@ -398,20 +398,19 @@ export default async function TodayPage({
               href="/barcode"
               style={{
                 display: "inline-flex",
-                height: 48,
+                height: 50,
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 8,
                 borderRadius: 16,
-                background: "#fff",
-                boxShadow: "0 4px 12px rgba(26,26,46,.06)",
+                background: "#FFF3EC",
                 fontSize: 13,
                 fontWeight: 700,
-                color: "#1A1A2E",
+                color: "#E5550A",
                 textDecoration: "none",
               }}
             >
-              <ScanBarcode size={17} color="#1A5CFF" />
+              <ScanBarcode size={17} color="#E5550A" />
               Code-barre
             </Link>
           </div>

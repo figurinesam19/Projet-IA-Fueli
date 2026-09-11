@@ -173,7 +173,7 @@ export default function TermsPage() {
           items={[
             "L'exactitude des valeurs nutritionnelles estimées par l'analyse IA — les résultats sont des estimations et ne remplacent pas un étiquetage officiel.",
             "La disponibilité continue du service sans interruption ni erreur.",
-            "L'adéquation des recommandations caloriquesgénérées à une situation médicale particulière.",
+            "L'adéquation des recommandations caloriques générées à une situation médicale particulière.",
           ]}
         />
         <p>

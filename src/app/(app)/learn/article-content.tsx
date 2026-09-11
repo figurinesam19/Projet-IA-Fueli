@@ -126,6 +126,33 @@ export function ArticleContent({ blocks }: { blocks: ArticleBlock[] }) {
           );
         }
 
+        if (block.type === "img") {
+          return (
+            <div
+              key={i}
+              style={{
+                borderRadius: 16,
+                overflow: "hidden",
+                margin: "4px 0",
+                boxShadow: "0 4px 12px rgba(26,26,46,.08)",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={block.src}
+                alt={block.alt}
+                style={{
+                  width: "100%",
+                  height: 180,
+                  objectFit: "cover",
+                  display: "block",
+                }}
+                loading="lazy"
+              />
+            </div>
+          );
+        }
+
         if (block.type === "quote") {
           return (
             <blockquote

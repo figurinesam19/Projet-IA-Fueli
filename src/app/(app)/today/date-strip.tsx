@@ -71,6 +71,18 @@ export function DateStrip({ selected }: Props) {
             >
               {d.getDate()}
             </span>
+            {/* Dot bleu = aujourd'hui non sélectionné */}
+            <span
+              style={{
+                display: "inline-block",
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background: isActive ? "rgba(255,255,255,.6)" : "#1A5CFF",
+                marginTop: 4,
+                opacity: isToday ? 1 : 0,
+              }}
+            />
           </div>
         );
 

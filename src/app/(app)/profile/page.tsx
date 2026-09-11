@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Pencil } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { computeDailyTargets } from "@/lib/nutrition";
 import { ProfileActions } from "./profile-actions";
@@ -182,24 +182,6 @@ export default async function ProfilePage() {
           )}
         </div>
 
-        {/* Bouton modifier */}
-        <Link
-          href="/profile/edit"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 38,
-            height: 38,
-            borderRadius: 13,
-            background: "#F7F8FC",
-            color: "#6B6B82",
-            flexShrink: 0,
-            textDecoration: "none",
-          }}
-        >
-          <Pencil size={16} />
-        </Link>
       </div>
 
       {/* ===== 3 STAT CARDS ===== */}
@@ -212,18 +194,27 @@ export default async function ProfilePage() {
           value={targets?.kcal != null ? String(targets.kcal) : "—"}
           unit="kcal / jour"
           valueFontSize={18}
+          emoji="⚡"
+          tint="#EEF3FF"
+          color="#1A5CFF"
         />
         <StatCard
           label="Poids"
           value={profile?.weight_kg != null ? String(profile.weight_kg) : "—"}
           unit="kg actuel"
           valueFontSize={18}
+          emoji="⚖️"
+          tint="#F1ECFF"
+          color="#7C3AED"
         />
         <StatCard
           label="But"
           value={labelGoalShort(profile?.goal)}
-          unit="objectif"
+          unit="programme"
           valueFontSize={14}
+          emoji="🎯"
+          tint="#FFF3EC"
+          color="#E5550A"
         />
       </div>
 
@@ -242,13 +233,6 @@ export default async function ProfilePage() {
           emoji="✏️"
           tint="#EEF3FF"
           label="Modifier mon profil"
-          border
-        />
-        <MenuItem
-          href="/profile/edit"
-          emoji="🎯"
-          tint="#FFF3EC"
-          label="Modifier mon objectif"
           border
         />
         <MenuItem
@@ -276,37 +260,8 @@ export default async function ProfilePage() {
           overflow: "hidden",
         }}
       >
-        <Link
-          href="/legal/terms"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "14px 16px",
-            textDecoration: "none",
-            borderBottom: "1px solid #F7F8FC",
-          }}
-        >
-          <span style={{ fontSize: 14, fontWeight: 600, color: "#3A3A52" }}>
-            CGU
-          </span>
-          <ChevronRight size={18} color="#C4C4D1" />
-        </Link>
-        <Link
-          href="/legal/privacy"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "14px 16px",
-            textDecoration: "none",
-          }}
-        >
-          <span style={{ fontSize: 14, fontWeight: 600, color: "#3A3A52" }}>
-            Politique de confidentialité
-          </span>
-          <ChevronRight size={18} color="#C4C4D1" />
-        </Link>
+        <MenuItem href="/legal/terms"  emoji="📄" tint="#F7F8FC" label="CGU" border />
+        <MenuItem href="/legal/privacy" emoji="🔒" tint="#F7F8FC" label="Politique de confidentialité" />
       </div>
 
       {/* ===== HISTORIQUE ===== */}
@@ -368,11 +323,17 @@ function StatCard({
   value,
   unit,
   valueFontSize,
+  emoji,
+  tint,
+  color,
 }: {
   label: string;
   value: string;
   unit: string;
   valueFontSize: number;
+  emoji?: string;
+  tint?: string;
+  color?: string;
 }) {
   return (
     <div
@@ -386,6 +347,23 @@ function StatCard({
         gap: 3,
       }}
     >
+      {emoji && (
+        <div
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 10,
+            background: tint ?? "#F7F8FC",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 15,
+            marginBottom: 6,
+          }}
+        >
+          {emoji}
+        </div>
+      )}
       <p
         style={{
           fontSize: 10,
@@ -402,7 +380,7 @@ function StatCard({
           fontSize: valueFontSize,
           fontWeight: 800,
           letterSpacing: "-.02em",
-          color: "#1A1A2E",
+          color: color ?? "#1A1A2E",
           fontVariantNumeric: "tabular-nums",
           lineHeight: 1.1,
           marginTop: 2,
