@@ -24,7 +24,13 @@ Analyse la photo et identifie chaque aliment visible. Pour CHAQUE aliment, estim
 - les lipides (g)
 
 Utilise les valeurs nutritionnelles standards (référentiel CIQUAL).
-Si la photo n'est pas un repas ou est inanalysable, retourne items: [] et confidence: "low".
+
+Si tu ne peux pas analyser la photo, retourne items: [] et indique la raison dans rejection_reason :
+- "blurry" : photo floue ou bougée
+- "poor_lighting" : photo trop sombre ou surexposée
+- "no_food" : aucune nourriture visible dans la photo
+- "unanalyzable" : autre raison (angle impossible, image corrompue, etc.)
+Si la photo est analysable, laisse rejection_reason à null.
 
 Réponds UNIQUEMENT en JSON conforme au schéma fourni.`;
 
@@ -55,8 +61,12 @@ const RESPONSE_SCHEMA = {
         type: "string",
         enum: ["high", "medium", "low"],
       },
+      rejection_reason: {
+        type: ["string", "null"],
+        enum: ["blurry", "poor_lighting", "no_food", "unanalyzable", null],
+      },
     },
-    required: ["items", "confidence"],
+    required: ["items", "confidence", "rejection_reason"],
   },
 } as const;
 

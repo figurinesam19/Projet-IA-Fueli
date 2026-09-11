@@ -42,7 +42,18 @@ export function ScanFlow() {
         return;
       }
       if (!json.items?.length) {
-        setError("Aucun aliment détecté. Reprends la photo en cadrant mieux l'assiette.");
+        const REJECTION_MESSAGES: Record<string, string> = {
+          blurry:        "📷  Photo trop floue — stabilise ton téléphone et reprends la photo.",
+          poor_lighting: "💡  Photo trop sombre ou surexposée — améliore l'éclairage et réessaie.",
+          no_food:       "🍽️  Aucune nourriture détectée — cadre bien l'assiette et réessaie.",
+          unanalyzable:  "❌  Photo inexploitable — essaie un autre angle ou importe depuis la galerie.",
+        };
+        const reason = json.rejection_reason as string | null;
+        setError(
+          reason && REJECTION_MESSAGES[reason]
+            ? REJECTION_MESSAGES[reason]
+            : "Aucun aliment détecté — reprends la photo en cadrant mieux l'assiette.",
+        );
         setStage("capture");
         return;
       }
