@@ -54,7 +54,7 @@ export function StepAccount({ pending, error, onSubmit }: Props) {
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="toi@email.com"
+            placeholder="e-mail"
             required
             className="fu-input"
           />
