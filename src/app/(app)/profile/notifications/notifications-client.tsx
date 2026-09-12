@@ -54,9 +54,19 @@ export function NotificationsClient() {
       return;
     }
 
-    navigator.serviceWorker.ready
-      .then((reg) => reg.pushManager.getSubscription())
-      .then((sub) => setState(sub ? "on" : "off"))
+    // getRegistration() répond tout de suite (undefined si aucun SW enregistré).
+    // À l'inverse, serviceWorker.ready ne se résout JAMAIS tant qu'aucun SW
+    // n'est actif — ce qui bloquait le spinner à l'infini avant activation.
+    navigator.serviceWorker
+      .getRegistration()
+      .then(async (reg) => {
+        if (!reg) {
+          setState("off");
+          return;
+        }
+        const sub = await reg.pushManager.getSubscription();
+        setState(sub ? "on" : "off");
+      })
       .catch(() => setState("off"));
   }, []);
 
