@@ -2,8 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { CheckCircle2 } from "lucide-react";
 
 export function ForgotForm() {
   const [pending, start] = useTransition();
@@ -49,34 +48,106 @@ export function ForgotForm() {
 
   if (sent) {
     return (
-      <div className="rounded-xl border border-border bg-card p-4 text-sm">
-        <p className="font-medium">Email envoyé ✉️</p>
-        <p className="mt-1 text-muted-foreground">
-          Si un compte existe avec cette adresse, tu vas recevoir un lien pour
-          choisir un nouveau mot de passe. Pense à vérifier ton dossier spam.
-        </p>
+      <div
+        className="animate-fade-up"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 14,
+          textAlign: "center",
+          background: "#F0FDF4",
+          border: "1.5px solid rgba(5,150,105,.2)",
+          borderRadius: 20,
+          padding: "28px 22px",
+        }}
+      >
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            background: "#DCFCE7",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <CheckCircle2 size={30} color="#059669" strokeWidth={2.2} />
+        </div>
+        <div>
+          <p style={{ fontSize: 16, fontWeight: 800, color: "#065F46" }}>
+            E-mail envoyé
+          </p>
+          <p
+            style={{
+              fontSize: 13.5,
+              fontWeight: 500,
+              color: "#3F7A63",
+              marginTop: 6,
+              lineHeight: 1.55,
+            }}
+          >
+            Si un compte existe avec cette adresse, tu vas recevoir un lien pour
+            choisir un nouveau mot de passe. Pense à vérifier tes spams.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
+    <form
+      onSubmit={onSubmit}
+      style={{ display: "flex", flexDirection: "column", gap: 14 }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <label
+          htmlFor="email"
+          style={{ fontSize: 13, fontWeight: 700, color: "#3A3A52" }}
+        >
+          Adresse e-mail
+        </label>
+        <input
           id="email"
           name="email"
           type="email"
           autoComplete="email"
+          placeholder="toi@email.com"
           required
           autoFocus
+          className="fu-input"
         />
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+
+      {error && (
+        <p style={{ fontSize: 13, fontWeight: 500, color: "#DC2626" }}>
+          {error}
+        </p>
+      )}
+
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-lg bg-accent py-3 text-sm font-medium text-accent-foreground hover:bg-accent/90 disabled:opacity-50"
+        style={{
+          marginTop: 4,
+          width: "100%",
+          padding: "16px",
+          borderRadius: 16,
+          border: "none",
+          background: pending
+            ? "#E8E8F0"
+            : "linear-gradient(135deg,#FF8540,#FF6B1A)",
+          color: pending ? "#9595A8" : "#fff",
+          fontSize: 16,
+          fontWeight: 800,
+          fontFamily: "inherit",
+          cursor: pending ? "not-allowed" : "pointer",
+          letterSpacing: "-.01em",
+          boxShadow: pending ? "none" : "0 8px 20px -4px rgba(255,107,26,.4)",
+          transition: "background .2s, box-shadow .2s, color .2s",
+        }}
       >
         {pending ? "Envoi…" : "Envoyer le lien"}
       </button>
