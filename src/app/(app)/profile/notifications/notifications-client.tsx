@@ -26,7 +26,7 @@ type State =
   | "off"
   | "on";
 
-export function NotificationsClient() {
+export function NotificationsClient({ canTest = false }: { canTest?: boolean }) {
   const [state, setState] = useState<State>("loading");
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -223,9 +223,11 @@ export function NotificationsClient() {
             <Check size={18} /> Notifications activées
           </div>
 
-          <PrimaryButton onClick={test} busy={busy} icon={<Send size={17} />} variant="soft">
-            Envoyer une notif test
-          </PrimaryButton>
+          {canTest && (
+            <PrimaryButton onClick={test} busy={busy} icon={<Send size={17} />} variant="soft">
+              Envoyer une notif test
+            </PrimaryButton>
+          )}
 
           <button
             type="button"

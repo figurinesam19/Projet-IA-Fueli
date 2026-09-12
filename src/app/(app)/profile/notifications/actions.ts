@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { getWebPush } from "@/lib/push";
+import { isAdminEmail } from "@/lib/admin";
 
 type SubJSON = {
   endpoint: string;
@@ -56,6 +57,8 @@ export async function sendTestNotification() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "Non connecté" };
+  // Outil interne : réservé aux comptes admin.
+  if (!isAdminEmail(user.email)) return { error: "Action non autorisée." };
 
   const { data: subs } = await supabase
     .from("push_subscriptions")

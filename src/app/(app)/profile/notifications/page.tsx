@@ -1,8 +1,16 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { isAdminEmail } from "@/lib/admin";
 import { NotificationsClient } from "./notifications-client";
 
-export default function NotificationsPage() {
+export default async function NotificationsPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const canTest = isAdminEmail(user?.email);
+
   return (
     <main
       className="page-bottom"
@@ -40,7 +48,7 @@ export default function NotificationsPage() {
         </h1>
       </div>
 
-      <NotificationsClient />
+      <NotificationsClient canTest={canTest} />
     </main>
   );
 }
