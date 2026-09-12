@@ -236,7 +236,7 @@ export default async function ProfilePage() {
           border
         />
         <MenuItem
-          href="#"
+          href="/profile/notifications"
           emoji="🔔"
           tint="#F1ECFF"
           label="Notifications"
