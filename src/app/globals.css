@@ -175,6 +175,19 @@
   to   { opacity: 1; }
 }
 
+@keyframes card-float-a {
+  0%, 100% { transform: rotate(-9deg) translateY(0px); }
+  50%       { transform: rotate(-9deg) translateY(-8px); }
+}
+@keyframes card-float-b {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+@keyframes card-float-c {
+  0%, 100% { transform: rotate(7deg) translateY(0px); }
+  50%       { transform: rotate(7deg) translateY(-6px); }
+}
+
 .animate-fade-up {
   animation: fu-fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
