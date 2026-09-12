@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -20,13 +20,14 @@ export function ForgotForm() {
       // les jetons de session (hash #access_token=…) au lieu d'un code PKCE.
       // Indispensable car le lien est souvent ouvert dans un autre navigateur
       // que celui qui a fait la demande (PWA → app Mail), où le code verifier
-      // PKCE n'existe pas. isSingleton: false pour ne pas écraser le client
-      // global de l'app.
-      const supabase = createBrowserClient(
+      // PKCE n'existe pas.
+      // ATTENTION : createBrowserClient de @supabase/ssr écrase flowType avec
+      // "pkce" quoi qu'on lui passe — il faut donc @supabase/supabase-js
+      // directement, qui respecte les options.
+      const supabase = createSupabaseClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
-          isSingleton: false,
           auth: {
             flowType: "implicit",
             persistSession: false,
