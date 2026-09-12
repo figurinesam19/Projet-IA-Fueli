@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { SplashOverlay } from "@/components/splash-overlay";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -37,6 +38,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <SplashOverlay />
         {children}
       </body>
     </html>
