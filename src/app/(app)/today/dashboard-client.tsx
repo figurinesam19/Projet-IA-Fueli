@@ -13,6 +13,7 @@ import { DailyCard } from "./daily-card";
 import { MacroBars } from "./macro-bars";
 import { DateStrip } from "./date-strip";
 import { ScanFab } from "./scan-fab";
+import { WeightCard, type WeightLog } from "./weight-card";
 
 const KIND_ORDER = ["petit_dejeuner", "dejeuner", "diner"] as const;
 
@@ -42,6 +43,9 @@ type Props = {
   todayMs: number;
   /** Timestamps de tous les repas sur 1 an — pour le calcul de la streak. */
   mealTimestamps: string[];
+  /** Pesées des 90 derniers jours, ordre chronologique. */
+  weightLogs: WeightLog[];
+  goal: "perte" | "masse" | "equilibre" | null;
 };
 
 function formatDate(d: Date) {
@@ -65,6 +69,8 @@ export function DashboardClient({
   weekMeals,
   todayMs,
   mealTimestamps,
+  weightLogs,
+  goal,
 }: Props) {
   const today = useMemo(() => new Date(todayMs), [todayMs]);
   const [selected, setSelected] = useState<Date>(today);
@@ -250,6 +256,13 @@ export function DashboardClient({
             }}
           >
             Termine ton onboarding pour voir ton objectif calorique.
+          </div>
+        )}
+
+        {/* ===== POIDS ===== */}
+        {isToday && (
+          <div className="animate-fade-up-3">
+            <WeightCard logs={weightLogs} goal={goal} />
           </div>
         )}
 

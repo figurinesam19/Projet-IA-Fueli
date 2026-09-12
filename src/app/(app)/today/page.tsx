@@ -23,7 +23,11 @@ export default async function TodayPage() {
   const yearAgo = new Date(today);
   yearAgo.setDate(yearAgo.getDate() - 366);
 
-  const [{ data: profile }, { data: meals }, { data: streakRows }] =
+  // Pesées des 90 derniers jours pour la carte Poids
+  const ninetyDaysAgo = new Date(today);
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
+  const [{ data: profile }, { data: meals }, { data: streakRows }, { data: weightLogs }] =
     await Promise.all([
       supabase.from("profiles").select("*").eq("id", user!.id).single(),
       supabase
@@ -38,6 +42,12 @@ export default async function TodayPage() {
         .select("consumed_at")
         .eq("user_id", user!.id)
         .gte("consumed_at", yearAgo.toISOString()),
+      supabase
+        .from("weight_logs")
+        .select("logged_on, weight_kg")
+        .eq("user_id", user!.id)
+        .gte("logged_on", ninetyDaysAgo.toISOString().slice(0, 10))
+        .order("logged_on", { ascending: true }),
     ]);
 
   const targets = computeDailyTargets(profile);
@@ -49,6 +59,11 @@ export default async function TodayPage() {
       weekMeals={(meals ?? []) as MealRow[]}
       todayMs={today.getTime()}
       mealTimestamps={(streakRows ?? []).map((r) => r.consumed_at as string)}
+      weightLogs={(weightLogs ?? []).map((w) => ({
+        logged_on: w.logged_on as string,
+        weight_kg: Number(w.weight_kg),
+      }))}
+      goal={profile?.goal ?? null}
     />
   );
 }
