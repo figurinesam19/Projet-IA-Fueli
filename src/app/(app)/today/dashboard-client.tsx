@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ScanBarcode, Search } from "lucide-react";
+import { ChevronRight, ScanBarcode, Search } from "lucide-react";
 import {
   emptyConsumption,
   type DailyConsumption,
@@ -264,6 +264,53 @@ export function DashboardClient({
           <div className="animate-fade-up-3">
             <WeightCard logs={weightLogs} goal={goal} />
           </div>
+        )}
+
+        {/* ===== BILAN HEBDO ===== */}
+        {isToday && (
+          <Link
+            href="/week"
+            className="animate-fade-up-3"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              background: "#fff",
+              borderRadius: 20,
+              padding: "16px 18px",
+              boxShadow: "0 6px 16px rgba(26,26,46,.05)",
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
+              <div
+                style={{
+                  width: 46,
+                  height: 46,
+                  borderRadius: 14,
+                  background: "#F1ECFF",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 21,
+                  flexShrink: 0,
+                }}
+              >
+                📊
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-.01em", color: "#1A1A2E" }}>
+                  Bilan de la semaine
+                </p>
+                <p style={{ fontSize: 12, fontWeight: 500, color: "#9595A8", marginTop: 2 }}>
+                  Moyennes, régularité, tendance
+                </p>
+              </div>
+            </div>
+            <ChevronRight size={18} color="#C4C4D1" />
+          </Link>
         )}
 
         {/* ===== JOURNAL ===== */}
