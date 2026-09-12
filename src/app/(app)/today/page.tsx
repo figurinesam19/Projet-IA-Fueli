@@ -19,16 +19,26 @@ export default async function TodayPage() {
   const { start: weekStart } = dayBounds(week[0]);
   const { end: todayEnd } = dayBounds(today);
 
-  const [{ data: profile }, { data: meals }] = await Promise.all([
-    supabase.from("profiles").select("*").eq("id", user!.id).single(),
-    supabase
-      .from("meals")
-      .select("*, meal_items(name)")
-      .eq("user_id", user!.id)
-      .gte("consumed_at", weekStart.toISOString())
-      .lt("consumed_at", todayEnd.toISOString())
-      .order("consumed_at", { ascending: true }),
-  ]);
+  // Pour la streak : uniquement les timestamps sur 1 an (colonne unique, léger)
+  const yearAgo = new Date(today);
+  yearAgo.setDate(yearAgo.getDate() - 366);
+
+  const [{ data: profile }, { data: meals }, { data: streakRows }] =
+    await Promise.all([
+      supabase.from("profiles").select("*").eq("id", user!.id).single(),
+      supabase
+        .from("meals")
+        .select("*, meal_items(name)")
+        .eq("user_id", user!.id)
+        .gte("consumed_at", weekStart.toISOString())
+        .lt("consumed_at", todayEnd.toISOString())
+        .order("consumed_at", { ascending: true }),
+      supabase
+        .from("meals")
+        .select("consumed_at")
+        .eq("user_id", user!.id)
+        .gte("consumed_at", yearAgo.toISOString()),
+    ]);
 
   const targets = computeDailyTargets(profile);
 
@@ -38,6 +48,7 @@ export default async function TodayPage() {
       targets={targets}
       weekMeals={(meals ?? []) as MealRow[]}
       todayMs={today.getTime()}
+      mealTimestamps={(streakRows ?? []).map((r) => r.consumed_at as string)}
     />
   );
 }

@@ -45,6 +45,34 @@ export function last7Days(): Date[] {
   return days;
 }
 
+/**
+ * Série de jours consécutifs avec au moins un repas, en remontant depuis
+ * aujourd'hui. Si aujourd'hui n'a encore rien, la série ne casse pas : on
+ * compte depuis hier (sinon l'utilisateur verrait 0 chaque matin).
+ */
+export function computeStreak(mealTimestamps: string[]): number {
+  const daysWithMeal = new Set(
+    mealTimestamps.map((ts) => toDayKey(new Date(ts))),
+  );
+  if (daysWithMeal.size === 0) return 0;
+
+  const cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+
+  // Point de départ : aujourd'hui si scanné, sinon hier.
+  if (!daysWithMeal.has(toDayKey(cursor))) {
+    cursor.setDate(cursor.getDate() - 1);
+    if (!daysWithMeal.has(toDayKey(cursor))) return 0;
+  }
+
+  let streak = 0;
+  while (daysWithMeal.has(toDayKey(cursor))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
 /** Retourne les 7 jours de la semaine courante, du lundi au dimanche. */
 export function currentWeek(): Date[] {
   const today = new Date();

@@ -8,7 +8,7 @@ import {
   type DailyConsumption,
   type DailyTargets,
 } from "@/lib/nutrition";
-import { dayBounds, isSameDay } from "@/lib/date";
+import { computeStreak, dayBounds, isSameDay } from "@/lib/date";
 import { DailyCard } from "./daily-card";
 import { MacroBars } from "./macro-bars";
 import { DateStrip } from "./date-strip";
@@ -40,6 +40,8 @@ type Props = {
   weekMeals: MealRow[];
   /** Timestamp (ms) de minuit aujourd'hui — évite les soucis de fuseau au parse. */
   todayMs: number;
+  /** Timestamps de tous les repas sur 1 an — pour le calcul de la streak. */
+  mealTimestamps: string[];
 };
 
 function formatDate(d: Date) {
@@ -57,12 +59,19 @@ function fmtTime(isoStr: string) {
   });
 }
 
-export function DashboardClient({ firstName, targets, weekMeals, todayMs }: Props) {
+export function DashboardClient({
+  firstName,
+  targets,
+  weekMeals,
+  todayMs,
+  mealTimestamps,
+}: Props) {
   const today = useMemo(() => new Date(todayMs), [todayMs]);
   const [selected, setSelected] = useState<Date>(today);
 
   const isToday = isSameDay(selected, today);
   const initial = firstName.charAt(0).toUpperCase() || "?";
+  const streak = useMemo(() => computeStreak(mealTimestamps), [mealTimestamps]);
 
   // Filtrage + agrégation par jour : purement en mémoire, aucun appel réseau.
   const { consumption, mealGroups, dayMeals } = useMemo(() => {
@@ -161,21 +170,51 @@ export function DashboardClient({ firstName, targets, weekMeals, todayMs }: Prop
 
           <div
             style={{
-              width: 46,
-              height: 46,
-              borderRadius: 16,
-              background: "linear-gradient(135deg,#84A9FF,#1A5CFF)",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 17,
-              boxShadow: "0 6px 14px rgba(26,92,255,.32)",
+              gap: 10,
               flexShrink: 0,
             }}
           >
-            {initial}
+            {/* Badge streak — visible dès 1 jour de série */}
+            {streak > 0 && (
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 5,
+                  background: "#FFF3EC",
+                  borderRadius: 999,
+                  padding: "8px 13px",
+                  fontSize: 14,
+                  fontWeight: 800,
+                  color: "#E5550A",
+                  letterSpacing: "-.01em",
+                  boxShadow: "0 2px 8px rgba(229,85,10,.12)",
+                }}
+                aria-label={`Série de ${streak} jour${streak > 1 ? "s" : ""}`}
+              >
+                🔥 {streak}
+              </div>
+            )}
+
+            <div
+              style={{
+                width: 46,
+                height: 46,
+                borderRadius: 16,
+                background: "linear-gradient(135deg,#84A9FF,#1A5CFF)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 17,
+                boxShadow: "0 6px 14px rgba(26,92,255,.32)",
+              }}
+            >
+              {initial}
+            </div>
           </div>
         </header>
 
