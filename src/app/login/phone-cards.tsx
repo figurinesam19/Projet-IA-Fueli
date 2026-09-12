@@ -2,8 +2,9 @@ import Image from "next/image";
 
 const CARDS = [
   {
-    src: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&q=80",
+    src: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=85",
     alt: "Pancakes avec sirop",
+    sizes: "280px",
     wrapStyle: {
       position: "absolute" as const,
       left: "calc(50% - 185px)",
@@ -19,8 +20,9 @@ const CARDS = [
     },
   },
   {
-    src: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80",
+    src: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=900&q=90",
     alt: "Bowl healthy avec légumes et avocat",
+    sizes: "480px",
     wrapStyle: {
       position: "absolute" as const,
       left: "calc(50% - 80px)",
@@ -36,8 +38,9 @@ const CARDS = [
     },
   },
   {
-    src: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400&q=80",
+    src: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=85",
     alt: "Buffet de légumes colorés",
+    sizes: "280px",
     wrapStyle: {
       position: "absolute" as const,
       left: "calc(50% + 45px)",
@@ -64,7 +67,7 @@ export function PhoneCards() {
             alt={card.alt}
             fill
             style={{ objectFit: "cover" }}
-            sizes="160px"
+            sizes={card.sizes}
             priority
           />
         </div>
