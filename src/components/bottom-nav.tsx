@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { BookOpen, Home, User } from "lucide-react";
 
 const TABS = [
@@ -14,6 +15,14 @@ const NAV_ONLY_PATHS = ["/today", "/learn", "/profile"];
 
 export function BottomNav() {
   const pathname = usePathname();
+  // Onglet cible cliqué : surligné immédiatement au tap, sans attendre que la
+  // navigation serveur se termine. Évite l'impression de latence.
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
+
+  // Dès que la navigation aboutit (pathname rattrape), on efface l'optimisme.
+  useEffect(() => {
+    setPendingHref(null);
+  }, [pathname]);
 
   if (!NAV_ONLY_PATHS.includes(pathname)) return null;
 
@@ -46,13 +55,20 @@ export function BottomNav() {
         }}
       >
         {TABS.map((tab) => {
-          const active =
+          const currentActive =
             pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+          // Si un onglet a été tapé, c'est lui qui est visuellement actif en
+          // priorité (feedback optimiste) ; sinon on suit le pathname réel.
+          const active = pendingHref
+            ? pendingHref === tab.href
+            : currentActive;
           const Icon = tab.icon;
           return (
             <li key={tab.href} style={{ flex: 1, display: "flex", justifyContent: "center" }}>
               <Link
                 href={tab.href}
+                prefetch
+                onClick={() => setPendingHref(tab.href)}
                 style={{
                   display: "inline-flex",
                   flexDirection: "column",
@@ -63,7 +79,7 @@ export function BottomNav() {
                   borderRadius: 18,
                   background: active ? "#EEF3FF" : "transparent",
                   color: active ? "#1A5CFF" : "#9595A8",
-                  transition: "background .2s ease, color .2s ease",
+                  transition: "background .12s ease, color .12s ease",
                 }}
               >
                 <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />

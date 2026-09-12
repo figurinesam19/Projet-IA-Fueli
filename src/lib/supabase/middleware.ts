@@ -54,18 +54,35 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Vérification onboarding pour les routes protégées (hors /onboarding)
+  // Vérification onboarding pour les routes protégées (hors /onboarding).
+  // Optimisation latence : une fois l'onboarding vérifié, on pose un cookie
+  // `fueli_ob` = user.id. Tant qu'il correspond à l'utilisateur courant, on
+  // saute la requête DB `profiles` à chaque navigation (elle renvoie toujours
+  // la même chose une fois onboardé). Un changement de compte invalide
+  // automatiquement le cookie (mismatch d'id) → la vérif DB est refaite.
   if (user && !isPublic && !pathname.startsWith("/onboarding")) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("onboarding_completed_at")
-      .eq("id", user.id)
-      .single();
+    const alreadyChecked = request.cookies.get("fueli_ob")?.value === user.id;
 
-    if (!profile?.onboarding_completed_at) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/onboarding";
-      return NextResponse.redirect(url);
+    if (!alreadyChecked) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("onboarding_completed_at")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile?.onboarding_completed_at) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/onboarding";
+        return NextResponse.redirect(url);
+      }
+
+      // Onboarding confirmé : mémorise-le pour les prochaines navigations
+      response.cookies.set("fueli_ob", user.id, {
+        maxAge: 60 * 60 * 24 * 30, // 30 jours
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+      });
     }
   }
 
