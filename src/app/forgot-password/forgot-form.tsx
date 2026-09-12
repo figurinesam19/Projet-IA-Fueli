@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { createBrowserClient } from "@supabase/ssr";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -16,9 +16,27 @@ export function ForgotForm() {
     const email = String(form.get("email")).trim();
     setError(null);
     start(async () => {
-      const supabase = createClient();
+      // Client dédié en flow "implicit" : le lien email contiendra directement
+      // les jetons de session (hash #access_token=…) au lieu d'un code PKCE.
+      // Indispensable car le lien est souvent ouvert dans un autre navigateur
+      // que celui qui a fait la demande (PWA → app Mail), où le code verifier
+      // PKCE n'existe pas. isSingleton: false pour ne pas écraser le client
+      // global de l'app.
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          isSingleton: false,
+          auth: {
+            flowType: "implicit",
+            persistSession: false,
+            autoRefreshToken: false,
+            detectSessionInUrl: false,
+          },
+        },
+      );
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/recovery`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) {
         setError(error.message);
