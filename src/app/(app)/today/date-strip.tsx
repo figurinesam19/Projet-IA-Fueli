@@ -1,13 +1,15 @@
-import Link from "next/link";
+"use client";
+
 import { isSameDay, currentWeek, toDayKey } from "@/lib/date";
 
 const SHORT_DAY = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
 
 type Props = {
   selected: Date;
+  onSelect: (day: Date) => void;
 };
 
-export function DateStrip({ selected }: Props) {
+export function DateStrip({ selected, onSelect }: Props) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const days = currentWeek();
@@ -29,8 +31,12 @@ export function DateStrip({ selected }: Props) {
         const isFuture = d > today;
         const key = toDayKey(d);
 
-        const cell = (
-          <div
+        return (
+          <button
+            key={key}
+            type="button"
+            disabled={isFuture}
+            onClick={() => onSelect(d)}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -39,6 +45,7 @@ export function DateStrip({ selected }: Props) {
               width: 48,
               height: 64,
               flexShrink: 0,
+              border: "none",
               borderRadius: 14,
               textAlign: "center",
               background: isActive ? "#1A5CFF" : "#fff",
@@ -47,7 +54,7 @@ export function DateStrip({ selected }: Props) {
                 : "0 2px 8px rgba(26,26,46,.06)",
               opacity: isFuture ? 0.35 : 1,
               cursor: isFuture ? "default" : "pointer",
-              transition: "transform 0.1s",
+              transition: "background .12s ease, box-shadow .12s ease",
             }}
           >
             <span
@@ -83,19 +90,7 @@ export function DateStrip({ selected }: Props) {
                 opacity: isToday ? 1 : 0,
               }}
             />
-          </div>
-        );
-
-        if (isFuture) return <div key={key}>{cell}</div>;
-
-        return (
-          <Link
-            key={key}
-            href={isToday ? "/today" : `/today?d=${key}`}
-            style={{ textDecoration: "none" }}
-          >
-            {cell}
-          </Link>
+          </button>
         );
       })}
     </nav>
