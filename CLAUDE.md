@@ -20,14 +20,14 @@ Application nutrition IA. "Fueli" vient de l'anglais "fuel" — la nourriture co
 - **Section Apprendre** : 4 articles statiques (mythes, objectifs, sport, basiques), liste + détail
 - **RGPD complet** : politique confidentialité 9 sections, consentement bloquant, droits implémentés, RLS strict
 - **Identité visuelle** : Inter, palette bleu/orange/jaune, fond clair, bottom nav 3 onglets, border-radius 8/12px, pas de dark mode (V1)
+- **Déploiement Vercel** : app live sur https://projet-ia-fueli.vercel.app (push sur `main` = déploiement auto), variables d'env configurées, HTTPS
+- **Caméra in-app live preview** (`getUserMedia`) : flux vidéo temps réel, capture snapshot canvas, bouton retourner caméra (avant/arrière), guides de cadrage, fallback galerie, gestion permissions/erreurs → `src/app/(app)/scan/camera-capture.tsx`
 
 ---
 
 ## ⬜ Reste à faire (par priorité)
 
-1. **Déploiement Vercel** — push GitHub → variables d'env (Supabase keys, OpenAI key, service_role) → redirect URLs Supabase → HTTPS auto
-2. **Caméra in-app live preview** (getUserMedia) — nécessite HTTPS
-3. **Scan code-barre via caméra** (@zxing/browser ou BarcodeDetector) — nécessite HTTPS
-4. **Passe design complète** — animations, micro-interactions, hiérarchie visuelle
-5. **CGU** page `/legal/terms`
-6. **Articles supplémentaires** dans la section Apprendre
+1. **Scan code-barre via caméra** (@zxing/browser ou BarcodeDetector) — nécessite HTTPS
+2. **Passe design complète** — animations, micro-interactions, hiérarchie visuelle
+3. **CGU** page `/legal/terms`
+4. **Articles supplémentaires** dans la section Apprendre
