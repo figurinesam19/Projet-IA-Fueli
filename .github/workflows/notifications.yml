@@ -1,0 +1,47 @@
+# Rappels de scan — déclenche la route /api/cron/notifications de la prod.
+#
+# Pourquoi GitHub Actions et pas Vercel Cron : le plan Hobby limite à 2 crons,
+# 1 déclenchement/jour, précision à l'heure. Ici il faut 3 créneaux précis.
+#
+# Heures de Paris visées : 9h30, 13h30, 21h00. Les crons GitHub sont en UTC et
+# ignorent l'heure d'été → deux entrées par créneau (offsets +1 et +2) ; la
+# route vérifie l'heure de Paris et ignore l'appel hors fenêtre, et son état
+# par utilisateur empêche tout double envoi le même jour.
+#
+# Secret requis (Settings → Secrets and variables → Actions) : CRON_SECRET,
+# identique à la variable d'environnement CRON_SECRET du projet Vercel.
+
+name: Rappels de scan
+
+on:
+  schedule:
+    - cron: "30 7 * * *" # 9h30 Paris (été)
+    - cron: "30 8 * * *" # 9h30 Paris (hiver)
+    - cron: "30 11 * * *" # 13h30 Paris (été)
+    - cron: "30 12 * * *" # 13h30 Paris (hiver)
+    - cron: "0 19 * * *" # 21h00 Paris (été)
+    - cron: "0 20 * * *" # 21h00 Paris (hiver)
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "Forcer un créneau (tests)"
+        type: choice
+        options: ["", "petit_dejeuner", "dejeuner", "diner"]
+        default: ""
+      dry:
+        description: "Simulation (aucun envoi)"
+        type: boolean
+        default: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Appeler la route cron
+        run: |
+          params=""
+          [ -n "${{ inputs.slot }}" ] && params="slot=${{ inputs.slot }}&"
+          [ "${{ inputs.dry }}" = "true" ] && params="${params}dry=1"
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://projet-ia-fueli.vercel.app/api/cron/notifications?${params}"

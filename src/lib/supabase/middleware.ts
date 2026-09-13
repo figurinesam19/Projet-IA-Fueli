@@ -9,6 +9,7 @@ const PUBLIC_PATHS = [
   "/legal",
   "/forgot-password",
   "/reset-password",
+  "/api/cron", // protégé par son propre secret Bearer, pas par la session
 ];
 
 export async function updateSession(request: NextRequest) {

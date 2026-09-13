@@ -31,14 +31,14 @@ Application nutrition IA. "Fueli" vient de l'anglais "fuel" — la nourriture co
 - **Suivi du poids** : table `weight_logs` (1/jour, upsert), carte dashboard avec sparkline + delta coloré selon objectif, bottom sheet de saisie ; chaque pesée met à jour `profiles.weight_kg` → recalcul auto de l'objectif calorique
 - **Bilan hebdomadaire `/week`** : barres kcal/jour colorées (vert ±10 % objectif / bleu dessous / orange dessus), stats (moyenne, jours scannés, dans l'objectif, protéines), comparaison semaine précédente
 - **Ajout rétroactif** : scanner/rechercher/code-barre sur n'importe quel jour passé via `?d=AAAA-MM-JJ` (boutons visibles sur les jours passés du strip, repas daté à midi, retour sur le bon jour)
+- **Notifications push — étape 2 (cron)** : route `GET /api/cron/notifications` (secret Bearer `CRON_SECRET`, exclue de la garde middleware) déclenchée par GitHub Actions (`.github/workflows/notifications.yml`, 2 crons UTC par créneau pour couvrir été/hiver — pas Vercel Cron : plan Hobby limité à 2 crons 1×/jour). Créneaux Paris 9h30 / 13h30 / 21h, fenêtre 50 min. N'envoie que si le repas du créneau (`meals.kind`) n'est pas scanné ce jour ; accroches `pickNotifCopy` sans répétition immédiate ; garde-fou : coupure après 3 jours sans aucun repas (sauf abonnement frais < 3 j) ; idempotent via table `notification_state` (jsonb par créneau : `last_date` + `last_copy`, RLS sans policy, service_role only). Params test : `?slot=diner&dry=1`. ⚠️ `CRON_SECRET` doit exister en 3 endroits : `.env.local`, env Vercel, secret GitHub Actions.
 
 ---
 
 ## ⬜ Reste à faire (par priorité)
 
-1. **Notifications push — étape 2 (cron)** : Vercel Cron à 9h30 / 13h30 / 21h (heures repas 8h30 / 12h30 / 20h, rappel ~1h après), n'envoyer QUE si le repas du créneau n'est pas scanné, max 3/jour, accroches tirées de `notification-copy.ts` sans répétition, garde-fou anti-harcèlement si plusieurs jours d'inactivité
-2. **Assistant « il te reste X »** : carte dashboard avec calories/protéines restantes + suggestion IA de repas (OpenAI déjà branché)
-3. **Scan code-barre via caméra** (@zxing/browser ou BarcodeDetector) — nécessite HTTPS
-4. **Passe design complète** — animations, micro-interactions, hiérarchie visuelle
-5. **CGU** page `/legal/terms`
-6. **Articles supplémentaires** dans la section Apprendre
+1. **Assistant « il te reste X »** : carte dashboard avec calories/protéines restantes + suggestion IA de repas (OpenAI déjà branché)
+2. **Scan code-barre via caméra** (@zxing/browser ou BarcodeDetector) — nécessite HTTPS
+3. **Passe design complète** — animations, micro-interactions, hiérarchie visuelle
+4. **CGU** page `/legal/terms`
+5. **Articles supplémentaires** dans la section Apprendre
