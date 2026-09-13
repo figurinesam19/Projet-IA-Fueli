@@ -7,7 +7,6 @@ import { ArticleContent } from "../article-content";
 // Métadonnées visuelles par catégorie (aligné sur learn/page.tsx)
 const CAT_DETAIL: Record<ArticleCategory, { emoji: string; tint: string; color: string }> = {
   bases:     { emoji: "📊", tint: "#EEF3FF", color: "#1A5CFF" },
-  mindset:   { emoji: "🧠", tint: "#F1ECFF", color: "#7C3AED" },
   nutrition: { emoji: "📈", tint: "#EEF3FF", color: "#0E37AB" },
   recettes:  { emoji: "🍳", tint: "#FFF3EC", color: "#E5550A" },
 };

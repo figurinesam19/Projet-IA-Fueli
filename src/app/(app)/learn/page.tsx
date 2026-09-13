@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Clock, Search } from "lucide-react";
-import { ARTICLES, type Article, type ArticleCategory } from "@/lib/articles";
+import { ARTICLES, articleThumb, type Article, type ArticleCategory } from "@/lib/articles";
 
 // Labels UI exacts demandés → les articles "nutrition" et "bases" mappent directement
 const CAT_META: Record<
@@ -11,15 +11,14 @@ const CAT_META: Record<
   { filterLabel: string; displayLabel: string; emoji: string; tint: string; color: string }
 > = {
   bases:     { filterLabel: "Bases",     displayLabel: "Basiques",  emoji: "📊", tint: "#EEF3FF", color: "#1A5CFF" },
-  mindset:   { filterLabel: "Mindset",   displayLabel: "Mindset",   emoji: "🧠", tint: "#F1ECFF", color: "#7C3AED" },
   nutrition: { filterLabel: "Nutrition", displayLabel: "Nutrition", emoji: "📈", tint: "#EEF3FF", color: "#0E37AB" },
   recettes:  { filterLabel: "Recettes",  displayLabel: "Recettes",  emoji: "🍳", tint: "#FFF3EC", color: "#E5550A" },
 };
 
-const FILTER_LABELS = ["Tout", "Bases", "Recettes", "Mindset", "Nutrition"];
+const FILTER_LABELS = ["Tout", "Bases", "Recettes", "Nutrition"];
 
 // Ordre éditorial des rangées de la page d'accueil (recettes en premier)
-const CAROUSEL_ORDER: ArticleCategory[] = ["recettes", "nutrition", "bases", "mindset"];
+const CAROUSEL_ORDER: ArticleCategory[] = ["recettes", "nutrition", "bases"];
 
 const SORTED = [...ARTICLES].sort((a, b) =>
   a.publishedAt < b.publishedAt ? 1 : -1,
@@ -297,7 +296,7 @@ function HomeView({
                 }}
               >
                 {items.map((a) => (
-                  <CarouselCard key={a.slug} article={a} tint={meta.tint} />
+                  <CarouselCard key={a.slug} article={a} />
                 ))}
               </div>
             </section>
@@ -308,7 +307,7 @@ function HomeView({
   );
 }
 
-function CarouselCard({ article, tint }: { article: Article; tint: string }) {
+function CarouselCard({ article }: { article: Article }) {
   return (
     <Link
       href={`/learn/${article.slug}`}
@@ -327,19 +326,14 @@ function CarouselCard({ article, tint }: { article: Article; tint: string }) {
         scrollSnapAlign: "start",
       }}
     >
-      <div
-        style={{
-          width: "100%",
-          height: 84,
-          borderRadius: 13,
-          background: tint,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 38,
-        }}
-      >
-        {article.emoji}
+      <div style={{ width: "100%", height: 84, borderRadius: 13, overflow: "hidden" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={articleThumb(article)}
+          alt={article.title}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          loading="lazy"
+        />
       </div>
 
       <h4
@@ -395,20 +389,14 @@ function ArticleList({ articles, query }: { articles: Article[]; query: string }
               color: "inherit",
             }}
           >
-            <div
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 16,
-                background: meta.tint,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 30,
-                flexShrink: 0,
-              }}
-            >
-              {a.emoji}
+            <div style={{ width: 60, height: 60, borderRadius: 16, overflow: "hidden", flexShrink: 0 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={articleThumb(a)}
+                alt={a.title}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                loading="lazy"
+              />
             </div>
 
             <div style={{ flex: 1, minWidth: 0 }}>

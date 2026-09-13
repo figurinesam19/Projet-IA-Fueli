@@ -1,8 +1,9 @@
 /**
  * Articles statiques pour la section Apprendre.
  *
- * Catégories alignées sur les filtres UI : bases | mindset | nutrition | recettes
- * Chaque article a son propre emoji (pas juste hérité de la catégorie).
+ * Catégories alignées sur les filtres UI : bases | nutrition | recettes
+ * Chaque article a son emoji (détail article) et une photo miniature
+ * thématique affichée sur les cartes (voir ARTICLE_IMAGE / articleThumb).
  * Texte inline : [[texte mis en valeur]] → highlight bleu dans ArticleContent.
  */
 
@@ -13,7 +14,7 @@ export type ArticleBlock =
   | { type: "quote"; text: string }
   | { type: "img"; src: string; alt: string };
 
-export type ArticleCategory = "bases" | "mindset" | "nutrition" | "recettes";
+export type ArticleCategory = "bases" | "nutrition" | "recettes";
 
 export type Article = {
   slug: string;
@@ -28,10 +29,37 @@ export type Article = {
 
 export const CATEGORY_LABEL: Record<ArticleCategory, string> = {
   bases:     "Basiques",
-  mindset:   "Mindset",
   nutrition: "Nutrition",
   recettes:  "Recettes",
 };
+
+// Photo miniature par article (affichée sur les cartes Apprendre).
+const unsplash = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?w=400&h=300&fit=crop&q=80`;
+
+const ARTICLE_IMAGE: Record<string, string> = {
+  "dejeuners-equilibres-15-min": unsplash("1512621776951-a57141f2eefd"), // buddha bowl
+  "diners-legers-rassasiants":   unsplash("1547592180-85f173990554"),    // soupe
+  "batch-cooking-bases":         unsplash("1490645935967-10de6ba17061"), // meal prep
+  "petits-dejeuners-proteines":  unsplash("1484723091739-30a097e8f929"), // petit-déj œufs
+  "sommeil-et-faim":             unsplash("1541781774459-bb2af2f05b55"), // lit / sommeil
+  "tes-besoins-selon-objectif":  unsplash("1498837167922-ddd27525d352"), // table de plats
+  "erreurs-sportifs-amateurs":   unsplash("1534438327276-14e5300c3a48"), // salle de sport
+  "comprendre-macronutriments":  unsplash("1546069901-ba9599a7e63c"),    // assiette colorée
+  "hydratation-bases":           unsplash("1548839140-29a749e1cf4d"),    // verre d'eau
+};
+
+// Photo de repli par catégorie si un article n'a pas de miniature dédiée.
+const CATEGORY_IMAGE: Record<ArticleCategory, string> = {
+  recettes:  unsplash("1512621776951-a57141f2eefd"),
+  nutrition: unsplash("1498837167922-ddd27525d352"),
+  bases:     unsplash("1546069901-ba9599a7e63c"),
+};
+
+/** Miniature thématique d'un article pour les cartes de la page Apprendre. */
+export function articleThumb(a: Article): string {
+  return ARTICLE_IMAGE[a.slug] ?? CATEGORY_IMAGE[a.category];
+}
 
 export const ARTICLES: Article[] = [
   {
@@ -167,42 +195,6 @@ export const ARTICLES: Article[] = [
     ],
   },
   {
-    slug: "manger-au-restaurant",
-    title: "Manger au resto sans exploser tes calories",
-    excerpt:
-      "Sortir ne doit pas ruiner ta semaine. Quelques réflexes simples avant, pendant et après.",
-    category: "mindset",
-    emoji: "🍽️",
-    readMinutes: 4,
-    publishedAt: "2026-09-09",
-    body: [
-      {
-        type: "p",
-        text: "Le restaurant n'est pas l'ennemi : c'est un plaisir, et un seul repas ne défait pas une semaine. Mais quelques réflexes évitent de doubler les calories [[sans même profiter davantage]] du moment.",
-      },
-      { type: "img", src: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=220&fit=crop&q=80", alt: "Repas au restaurant" },
-      { type: "h2", text: "Avant : ne jamais arriver affamé" },
-      {
-        type: "p",
-        text: "Sauter le repas d'avant « pour se rattraper » est une [[fausse bonne idée]] : tu arrives affamé et tu manges le double. Prends un petit encas protéiné avant de partir si tu as très faim.",
-      },
-      { type: "h2", text: "Pendant : les vrais pièges" },
-      {
-        type: "p",
-        text: "Le [[pain à volonté, les sauces et l'alcool]] font grimper l'addition calorique bien plus que le plat lui-même. Un verre de vin ou de la corbeille de pain, c'est vite 300 kcal invisibles. Choisis ce qui te fait vraiment plaisir, laisse le reste.",
-      },
-      { type: "h2", text: "La règle simple" },
-      {
-        type: "p",
-        text: "Priorise [[une entrée OU un dessert, pas les deux]], et vise une protéine + des légumes dans le plat. Tu profites pleinement sans te resservir de tout par habitude.",
-      },
-      {
-        type: "quote",
-        text: "Un repas au resto ne casse rien. C'est la régularité du reste de la semaine qui compte.",
-      },
-    ],
-  },
-  {
     slug: "batch-cooking-bases",
     title: "Batch cooking : 3 bases pour toute la semaine",
     excerpt:
@@ -245,52 +237,6 @@ export const ARTICLES: Article[] = [
       {
         type: "quote",
         text: "Deux heures le dimanche t'épargnent cinq « je sais pas quoi manger » dans la semaine.",
-      },
-    ],
-  },
-  {
-    slug: "faux-aliments-sains",
-    title: "Les 5 faux aliments « sains » qui te trompent",
-    excerpt:
-      "Granola, jus pressés, yaourts 0%, barres protéinées… ils ont l'air bons pour toi. Pas toujours.",
-    category: "mindset",
-    emoji: "🧠",
-    readMinutes: 4,
-    publishedAt: "2026-06-10",
-    body: [
-      {
-        type: "p",
-        text: "Les rayons « bien-être » sont remplis de produits avec un emballage rassurant. Le problème : ces signaux marketing ne disent rien sur la composition réelle.",
-      },
-      { type: "img", src: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=600&h=220&fit=crop&q=80", alt: "Granola et produits transformés soi-disant sains" },
-      { type: "h2", text: "1. Le granola du petit-déjeuner" },
-      {
-        type: "p",
-        text: "Une portion dépasse souvent [[450 kcal pour 80g]] — autant qu'un repas. C'est surtout du sucre et de l'huile. L'avoine sur l'emballage ne change pas la densité calorique.",
-      },
-      { type: "h2", text: "2. Les jus de fruits pressés" },
-      {
-        type: "p",
-        text: "Un jus d'orange contient [[autant de sucre qu'un soda]] — mais sans les fibres du fruit entier. Tu absorbes le sucre 5× plus vite, sans le rassasiement de la mastication.",
-      },
-      { type: "h2", text: "3. Les yaourts 0%" },
-      {
-        type: "p",
-        text: "Souvent compensés en sucre pour garder le goût. Vérifie la ligne « dont sucres » : [[12g par pot = trois carrés de sucre]].",
-      },
-      { type: "h2", text: "4. Les barres protéinées" },
-      {
-        type: "p",
-        text: "Beaucoup sont des biscuits chocolatés avec quelques protéines ajoutées. [[250 kcal, 18g de sucre]] — à regarder de près avant d'acheter.",
-      },
-      { type: "h2", text: "5. Le pain « complet » industriel" },
-      {
-        type: "p",
-        text: "Si la farine de blé tendre est en première position dans la liste des ingrédients, [[c'est un pain blanc déguisé]]. Le vrai pain complet n'a qu'une seule farine.",
-      },
-      {
-        type: "quote",
-        text: "Le marketing peint l'emballage. La liste des ingrédients dit la vérité.",
       },
     ],
   },
