@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Scale, X } from "lucide-react";
+import Link from "next/link";
+import { Plus, Scale, X } from "lucide-react";
 import { logWeight } from "./actions";
 
 export type WeightLog = { logged_on: string; weight_kg: number };
@@ -71,11 +72,6 @@ export function WeightCard({ logs, goal }: Props) {
   const [pending, start] = useTransition();
 
   const latest = logs.length > 0 ? logs[logs.length - 1] : null;
-  const previous = logs.length > 1 ? logs[logs.length - 2] : null;
-  const delta =
-    latest && previous
-      ? Math.round((latest.weight_kg - previous.weight_kg) * 10) / 10
-      : null;
 
   function save() {
     const parsed = parseFloat(value.replace(",", "."));
@@ -96,81 +92,115 @@ export function WeightCard({ logs, goal }: Props) {
     });
   }
 
+  const totalDelta =
+    logs.length > 1
+      ? Math.round((logs[logs.length - 1].weight_kg - logs[0].weight_kg) * 10) / 10
+      : null;
+
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
+      <div
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
+          gap: 8,
           width: "100%",
           background: "#fff",
-          border: "none",
           borderRadius: 20,
-          padding: "16px 18px",
+          padding: "12px 12px 12px 18px",
           boxShadow: "0 6px 16px rgba(26,26,46,.05)",
-          cursor: "pointer",
-          fontFamily: "inherit",
-          textAlign: "left",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 13, minWidth: 0 }}>
-          <div
-            style={{
-              width: 46,
-              height: 46,
-              borderRadius: 14,
-              background: "#EEF3FF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <Scale size={21} color="#1A5CFF" />
-          </div>
-          <div style={{ minWidth: 0 }}>
-            <p style={{ fontSize: 13, fontWeight: 700, color: "#9595A8" }}>Poids</p>
-            {latest ? (
-              <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 2 }}>
-                <span
-                  style={{
-                    fontSize: 20,
-                    fontWeight: 800,
-                    letterSpacing: "-.02em",
-                    color: "#1A1A2E",
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  {latest.weight_kg.toLocaleString("fr-FR")} kg
-                </span>
-                {delta !== null && delta !== 0 && (
+        {/* Corps cliquable → page de suivi détaillée */}
+        <Link
+          href="/weight"
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            textDecoration: "none",
+            color: "inherit",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 13, minWidth: 0 }}>
+            <div
+              style={{
+                width: 46,
+                height: 46,
+                borderRadius: 14,
+                background: "#EEF3FF",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <Scale size={21} color="#1A5CFF" />
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "#9595A8" }}>Poids</p>
+              {latest ? (
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 2 }}>
                   <span
                     style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: deltaColor(delta, goal),
+                      fontSize: 20,
+                      fontWeight: 800,
+                      letterSpacing: "-.02em",
+                      color: "#1A1A2E",
                       fontVariantNumeric: "tabular-nums",
                     }}
                   >
-                    {delta > 0 ? "+" : ""}
-                    {delta.toLocaleString("fr-FR")} kg
+                    {latest.weight_kg.toLocaleString("fr-FR")} kg
                   </span>
-                )}
-              </div>
-            ) : (
-              <p style={{ fontSize: 14, fontWeight: 600, color: "#1A1A2E", marginTop: 2 }}>
-                Ajoute ta première pesée
-              </p>
-            )}
+                  {totalDelta !== null && totalDelta !== 0 && (
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: deltaColor(totalDelta, goal),
+                        fontVariantNumeric: "tabular-nums",
+                      }}
+                    >
+                      {totalDelta > 0 ? "+" : ""}
+                      {totalDelta.toLocaleString("fr-FR")} kg
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#1A1A2E", marginTop: 2 }}>
+                  Ajoute ta première pesée
+                </p>
+              )}
+            </div>
           </div>
-        </div>
 
-        <Sparkline logs={logs.slice(-30)} />
-      </button>
+          <Sparkline logs={logs.slice(-30)} />
+        </Link>
+
+        {/* Saisie rapide sans quitter le dashboard */}
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Ajouter une pesée"
+          style={{
+            width: 42,
+            height: 42,
+            borderRadius: 13,
+            border: "none",
+            background: "#FFF3EC",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <Plus size={19} color="#E5550A" />
+        </button>
+      </div>
 
       {/* Modal de saisie */}
       {open && (
