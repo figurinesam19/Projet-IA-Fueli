@@ -14,6 +14,7 @@ import { MacroBars } from "./macro-bars";
 import { DateStrip } from "./date-strip";
 import { ScanFab } from "./scan-fab";
 import { WeightCard, type WeightLog } from "./weight-card";
+import { AssistantCard } from "./assistant-card";
 
 const KIND_ORDER = ["petit_dejeuner", "dejeuner", "diner"] as const;
 
@@ -248,6 +249,20 @@ export function DashboardClient({
             <div className="animate-fade-up-3">
               <MacroBars consumed={consumption} targets={targets} />
             </div>
+            {isToday && (
+              <div className="animate-fade-up-3">
+                <AssistantCard
+                  remaining={{
+                    kcal: targets.kcal - consumption.kcal,
+                    proteinG: targets.proteinG - consumption.proteinG,
+                    carbsG: targets.carbsG - consumption.carbsG,
+                    fatG: targets.fatG - consumption.fatG,
+                  }}
+                  goal={goal}
+                  eaten={dayMeals.flatMap((m) => m.meal_items?.map((i) => i.name) ?? [])}
+                />
+              </div>
+            )}
           </>
         ) : (
           <div

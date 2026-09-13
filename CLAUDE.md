@@ -33,12 +33,13 @@ Application nutrition IA. "Fueli" vient de l'anglais "fuel" — la nourriture co
 - **Ajout rétroactif** : scanner/rechercher/code-barre sur n'importe quel jour passé via `?d=AAAA-MM-JJ` (boutons visibles sur les jours passés du strip, repas daté à midi, retour sur le bon jour)
 - **Notifications push — étape 2 (cron)** : route `GET /api/cron/notifications` (secret Bearer `CRON_SECRET`, exclue de la garde middleware) déclenchée par GitHub Actions (`.github/workflows/notifications.yml`, 2 crons UTC par créneau pour couvrir été/hiver — pas Vercel Cron : plan Hobby limité à 2 crons 1×/jour). Créneaux Paris 9h30 / 13h30 / 21h, fenêtre 50 min. N'envoie que si le repas du créneau (`meals.kind`) n'est pas scanné ce jour ; accroches `pickNotifCopy` sans répétition immédiate ; garde-fou : coupure après 3 jours sans aucun repas (sauf abonnement frais < 3 j) ; idempotent via table `notification_state` (jsonb par créneau : `last_date` + `last_copy`, RLS sans policy, service_role only). Params test : `?slot=diner&dry=1`. ⚠️ `CRON_SECRET` doit exister en 3 endroits : `.env.local`, env Vercel, secret GitHub Actions.
 
+- **Assistant « il te reste X »** : carte dashboard (aujourd'hui seulement, entre macros et poids) avec kcal/protéines restantes calculées en local, + bouton « Une idée de repas ? » → `POST /api/assistant` → GPT-4o Mini (JSON Schema strict, temperature 0.9 pour varier) qui propose UN plat réaliste adapté au moment de la journée, au restant et à l'objectif, en évitant ce qui a déjà été mangé. À la demande uniquement (zéro coût/latence à l'affichage). État « objectif atteint 💪 » sous 100 kcal restantes.
+
 ---
 
 ## ⬜ Reste à faire (par priorité)
 
-1. **Assistant « il te reste X »** : carte dashboard avec calories/protéines restantes + suggestion IA de repas (OpenAI déjà branché)
-2. **Scan code-barre via caméra** (@zxing/browser ou BarcodeDetector) — nécessite HTTPS
-3. **Passe design complète** — animations, micro-interactions, hiérarchie visuelle
-4. **CGU** page `/legal/terms`
-5. **Articles supplémentaires** dans la section Apprendre
+1. **Scan code-barre via caméra** (@zxing/browser ou BarcodeDetector) — nécessite HTTPS
+2. **Passe design complète** — animations, micro-interactions, hiérarchie visuelle
+3. **CGU** page `/legal/terms`
+4. **Articles supplémentaires** dans la section Apprendre
