@@ -38,6 +38,7 @@ const unsplash = (id: string) =>
   `https://images.unsplash.com/photo-${id}?w=400&h=300&fit=crop&q=80`;
 
 const ARTICLE_IMAGE: Record<string, string> = {
+  "calories-c-est-quoi":         unsplash("1504674900247-0877df9cc836"), // plats variés
   "dejeuners-equilibres-15-min": unsplash("1512621776951-a57141f2eefd"), // buddha bowl
   "diners-legers-rassasiants":   unsplash("1547592180-85f173990554"),    // soupe
   "batch-cooking-bases":         unsplash("1490645935967-10de6ba17061"), // meal prep
@@ -62,6 +63,56 @@ export function articleThumb(a: Article): string {
 }
 
 export const ARTICLES: Article[] = [
+  {
+    slug: "calories-c-est-quoi",
+    title: "Les calories, c'est quoi au juste ?",
+    excerpt:
+      "On en parle tout le temps sans vraiment savoir ce que c'est. La base, expliquée simplement.",
+    category: "bases",
+    emoji: "🔥",
+    readMinutes: 4,
+    publishedAt: "2026-09-07",
+    body: [
+      {
+        type: "p",
+        text: "On compte les calories, on les traque, on les brûle… mais peu de gens savent vraiment ce qu'elles sont. Comprendre cette base, c'est arrêter d'en avoir peur et commencer à s'en servir comme d'un outil.",
+      },
+      { type: "img", src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=220&fit=crop&q=80", alt: "Assiette de plats variés et équilibrés" },
+      { type: "h2", text: "Une calorie, c'est de l'énergie" },
+      {
+        type: "p",
+        text: "Une calorie mesure simplement [[l'énergie que ton corps tire d'un aliment]]. Comme un carburant : ton corps s'en sert pour respirer, bouger, réfléchir, digérer. Ce n'est ni « bon » ni « mauvais » en soi — c'est juste une unité de mesure.",
+      },
+      { type: "h2", text: "Ton corps en dépense même au repos" },
+      {
+        type: "p",
+        text: "Même allongé sans rien faire, tu brûles des calories : c'est ton [[métabolisme de base]]. Il représente [[60 à 70% de ta dépense quotidienne]]. Le sport et l'activité ne sont que la partie visible — l'essentiel part dans le simple fait de fonctionner.",
+      },
+      { type: "h2", text: "L'équilibre qui décide de tout" },
+      {
+        type: "p",
+        text: "Ton poids suit une balance : [[les calories mangées face aux calories dépensées]]. Manger plus que tu ne dépenses = stockage. Moins = puisage dans les réserves. À l'équilibre, tu stabilises. Tout part de là, avant même de parler de macros.",
+      },
+      { type: "h2", text: "Pourquoi la source compte quand même" },
+      {
+        type: "p",
+        text: "200 kcal de poulet et 200 kcal de soda apportent la même énergie, mais [[pas le même rassasiement ni les mêmes nutriments]]. Les calories décident du poids ; leur qualité décide de ta faim, ton énergie et ta santé. Les deux comptent.",
+      },
+      {
+        type: "ul",
+        items: [
+          "1g de protéines ou de glucides = 4 kcal",
+          "1g de lipides = 9 kcal (plus du double)",
+          "1g d'alcool = 7 kcal, sans aucun nutriment",
+          "La majorité de ta dépense est invisible : ton métabolisme de base",
+        ],
+      },
+      {
+        type: "quote",
+        text: "Une calorie n'est pas ton ennemie, c'est ton carburant. Le but n'est pas d'en avoir peur, mais de savoir combien il t'en faut.",
+      },
+    ],
+  },
   {
     slug: "dejeuners-equilibres-15-min",
     title: "5 déjeuners équilibrés prêts en 15 minutes",
