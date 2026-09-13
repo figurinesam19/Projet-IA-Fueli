@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Clock, Search } from "lucide-react";
-import { ARTICLES, type ArticleCategory } from "@/lib/articles";
+import { ARTICLES, type Article, type ArticleCategory } from "@/lib/articles";
 
 // Labels UI exacts demandés → les articles "nutrition" et "bases" mappent directement
 const CAT_META: Record<
@@ -17,6 +17,9 @@ const CAT_META: Record<
 };
 
 const FILTER_LABELS = ["Tout", "Bases", "Recettes", "Mindset", "Nutrition"];
+
+// Ordre éditorial des rangées de la page d'accueil (recettes en premier)
+const CAROUSEL_ORDER: ArticleCategory[] = ["recettes", "nutrition", "bases", "mindset"];
 
 const SORTED = [...ARTICLES].sort((a, b) =>
   a.publishedAt < b.publishedAt ? 1 : -1,
@@ -38,9 +41,10 @@ export default function LearnPage() {
     return matchesCat && matchesText;
   });
 
-  const showHero     = !q && filter === "Tout" && filtered.length > 0;
-  const heroArticle  = showHero ? filtered[0] : null;
-  const listArticles = showHero ? filtered.slice(1) : filtered;
+  // Accueil = pas de recherche ni de filtre → une + carrousels par thème.
+  // Sinon (recherche ou filtre actif) → liste verticale classique des résultats.
+  const isHome = !q && filter === "Tout";
+  const heroArticle = isHome ? SORTED[0] : null;
 
   return (
     <main
@@ -134,185 +138,337 @@ export default function LearnPage() {
         ))}
       </div>
 
+      {isHome ? (
+        <HomeView hero={heroArticle!} onSeeAll={setFilter} />
+      ) : (
+        <ArticleList articles={filtered} query={query} />
+      )}
+    </main>
+  );
+}
+
+/* ============================================================ */
+/* Accueil : carte à la une + une rangée horizontale par thème  */
+/* ============================================================ */
+
+function HomeView({
+  hero,
+  onSeeAll,
+}: {
+  hero: Article;
+  onSeeAll: (filterLabel: string) => void;
+}) {
+  return (
+    <>
       {/* ===== CARTE À LA UNE ===== */}
-      {heroArticle && (
-        <Link
-          href={`/learn/${heroArticle.slug}`}
-          className="animate-fade-up-3"
+      <Link
+        href={`/learn/${hero.slug}`}
+        className="animate-fade-up-3"
+        style={{
+          display: "block",
+          borderRadius: 24,
+          overflow: "hidden",
+          background: "linear-gradient(135deg,#1A5CFF,#0E37AB)",
+          padding: 22,
+          color: "#fff",
+          marginBottom: 22,
+          textDecoration: "none",
+          position: "relative",
+          boxShadow: "0 14px 30px -8px rgba(26,92,255,.45)",
+        }}
+      >
+        <div
           style={{
-            display: "block",
-            borderRadius: 24,
-            overflow: "hidden",
-            background: "linear-gradient(135deg,#1A5CFF,#0E37AB)",
-            padding: 22,
-            color: "#fff",
-            marginBottom: 16,
-            textDecoration: "none",
-            position: "relative",
-            boxShadow: "0 14px 30px -8px rgba(26,92,255,.45)",
+            position: "absolute",
+            top: -16,
+            right: -8,
+            fontSize: 110,
+            opacity: 0.18,
+            lineHeight: 1,
+            pointerEvents: "none",
+            userSelect: "none",
           }}
         >
-          {/* Emoji décoratif */}
-          <div
+          {hero.emoji}
+        </div>
+
+        <div style={{ position: "relative" }}>
+          <span
             style={{
-              position: "absolute",
-              top: -16,
-              right: -8,
-              fontSize: 110,
-              opacity: 0.18,
-              lineHeight: 1,
-              pointerEvents: "none",
-              userSelect: "none",
+              display: "inline-block",
+              background: "rgba(255,255,255,.18)",
+              fontSize: 11,
+              fontWeight: 700,
+              padding: "4px 10px",
+              borderRadius: 999,
+              textTransform: "uppercase",
+              letterSpacing: ".04em",
             }}
           >
-            {heroArticle.emoji}
+            À la une · {CAT_META[hero.category].displayLabel}
+          </span>
+
+          <h2
+            style={{
+              fontSize: 22,
+              fontWeight: 800,
+              letterSpacing: "-.02em",
+              lineHeight: 1.2,
+              marginTop: 12,
+              maxWidth: "82%",
+            }}
+          >
+            {hero.title}
+          </h2>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              marginTop: 12,
+              fontSize: 12,
+              fontWeight: 600,
+              color: "#C7D6FF",
+            }}
+          >
+            <Clock size={13} color="#C7D6FF" />
+            {hero.readMinutes} min de lecture
           </div>
+        </div>
+      </Link>
 
-          <div style={{ position: "relative" }}>
-            <span
-              style={{
-                display: "inline-block",
-                background: "rgba(255,255,255,.18)",
-                fontSize: 11,
-                fontWeight: 700,
-                padding: "4px 10px",
-                borderRadius: 999,
-                textTransform: "uppercase",
-                letterSpacing: ".04em",
-              }}
-            >
-              À la une · {CAT_META[heroArticle.category].displayLabel}
-            </span>
+      {/* ===== RANGÉES PAR THÈME ===== */}
+      <div className="animate-fade-up-4" style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+        {CAROUSEL_ORDER.map((cat) => {
+          // Articles du thème, sauf celui déjà mis à la une pour éviter le doublon
+          const items = SORTED.filter((a) => a.category === cat && a.slug !== hero.slug);
+          if (items.length === 0) return null;
+          const meta = CAT_META[cat];
 
-            <h2
-              style={{
-                fontSize: 22,
-                fontWeight: 800,
-                letterSpacing: "-.02em",
-                lineHeight: 1.2,
-                marginTop: 12,
-                maxWidth: "82%",
-              }}
-            >
-              {heroArticle.title}
-            </h2>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                marginTop: 12,
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#C7D6FF",
-              }}
-            >
-              <Clock size={13} color="#C7D6FF" />
-              {heroArticle.readMinutes} min de lecture
-            </div>
-          </div>
-        </Link>
-      )}
-
-      {/* ===== LISTE ARTICLES ===== */}
-      <div
-        className="animate-fade-up-4"
-        style={{ display: "flex", flexDirection: "column", gap: 12 }}
-      >
-        {listArticles.map((a) => {
-          const meta = CAT_META[a.category];
           return (
-            <Link
-              key={a.slug}
-              href={`/learn/${a.slug}`}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                background: "#fff",
-                borderRadius: 20,
-                padding: 14,
-                boxShadow: "0 6px 16px rgba(26,26,46,.05)",
-                textDecoration: "none",
-                color: "inherit",
-              }}
-            >
+            <section key={cat}>
+              {/* En-tête de rangée */}
               <div
                 style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 16,
-                  background: meta.tint,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 30,
-                  flexShrink: 0,
+                  justifyContent: "space-between",
+                  padding: "0 2px 10px",
                 }}
               >
-                {a.emoji}
-              </div>
-
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: ".04em",
-                      color: meta.color,
-                    }}
-                  >
-                    {meta.displayLabel}
-                  </span>
-                  <span
-                    style={{
-                      width: 3,
-                      height: 3,
-                      borderRadius: "50%",
-                      background: "#C4C4D1",
-                      display: "inline-block",
-                      flexShrink: 0,
-                    }}
-                  />
-                  <span style={{ fontSize: 11, fontWeight: 600, color: "#9595A8" }}>
-                    {a.readMinutes} min
-                  </span>
-                </div>
-
-                <h2
+                <h3
                   style={{
-                    fontSize: 14,
-                    fontWeight: 700,
-                    letterSpacing: "-.01em",
-                    lineHeight: 1.3,
+                    fontSize: 16,
+                    fontWeight: 800,
+                    letterSpacing: "-.02em",
                     color: "#1A1A2E",
                   }}
                 >
-                  {a.title}
-                </h2>
+                  {meta.emoji} {meta.displayLabel}
+                </h3>
+                <button
+                  onClick={() => onSeeAll(meta.filterLabel)}
+                  style={{
+                    border: "none",
+                    background: "none",
+                    padding: 0,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "#9595A8",
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  Voir tout ›
+                </button>
               </div>
 
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-                <path d="M9 6l6 6-6 6" stroke="#C4C4D1" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
+              {/* Rangée horizontale */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  overflowX: "auto",
+                  margin: "0 -18px",
+                  padding: "4px 18px 4px",
+                  scrollbarWidth: "none",
+                  scrollSnapType: "x mandatory",
+                }}
+              >
+                {items.map((a) => (
+                  <CarouselCard key={a.slug} article={a} tint={meta.tint} />
+                ))}
+              </div>
+            </section>
           );
         })}
-
-        {filtered.length === 0 && (
-          <div style={{ textAlign: "center", padding: "40px 20px", color: "#9595A8" }}>
-            <div style={{ fontSize: 40 }}>🔍</div>
-            <p style={{ fontSize: 14, fontWeight: 600, marginTop: 8 }}>
-              {query
-                ? `Aucun résultat pour « ${query} »`
-                : "Aucun article dans cette catégorie pour l'instant."}
-            </p>
-          </div>
-        )}
       </div>
-    </main>
+    </>
+  );
+}
+
+function CarouselCard({ article, tint }: { article: Article; tint: string }) {
+  return (
+    <Link
+      href={`/learn/${article.slug}`}
+      style={{
+        flexShrink: 0,
+        width: 158,
+        background: "#fff",
+        borderRadius: 18,
+        padding: 12,
+        boxShadow: "0 6px 16px rgba(26,26,46,.05)",
+        textDecoration: "none",
+        color: "inherit",
+        display: "flex",
+        flexDirection: "column",
+        gap: 10,
+        scrollSnapAlign: "start",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          height: 84,
+          borderRadius: 13,
+          background: tint,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 38,
+        }}
+      >
+        {article.emoji}
+      </div>
+
+      <h4
+        style={{
+          fontSize: 13.5,
+          fontWeight: 700,
+          letterSpacing: "-.01em",
+          lineHeight: 1.3,
+          color: "#1A1A2E",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          minHeight: 35,
+        }}
+      >
+        {article.title}
+      </h4>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 600, color: "#9595A8" }}>
+        <Clock size={12} color="#9595A8" />
+        {article.readMinutes} min
+      </div>
+    </Link>
+  );
+}
+
+/* ============================================================ */
+/* Résultats de recherche / filtre : liste verticale classique  */
+/* ============================================================ */
+
+function ArticleList({ articles, query }: { articles: Article[]; query: string }) {
+  return (
+    <div
+      className="animate-fade-up-3"
+      style={{ display: "flex", flexDirection: "column", gap: 12 }}
+    >
+      {articles.map((a) => {
+        const meta = CAT_META[a.category];
+        return (
+          <Link
+            key={a.slug}
+            href={`/learn/${a.slug}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              background: "#fff",
+              borderRadius: 20,
+              padding: 14,
+              boxShadow: "0 6px 16px rgba(26,26,46,.05)",
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
+            <div
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 16,
+                background: meta.tint,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 30,
+                flexShrink: 0,
+              }}
+            >
+              {a.emoji}
+            </div>
+
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: ".04em",
+                    color: meta.color,
+                  }}
+                >
+                  {meta.displayLabel}
+                </span>
+                <span
+                  style={{
+                    width: 3,
+                    height: 3,
+                    borderRadius: "50%",
+                    background: "#C4C4D1",
+                    display: "inline-block",
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#9595A8" }}>
+                  {a.readMinutes} min
+                </span>
+              </div>
+
+              <h2
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  letterSpacing: "-.01em",
+                  lineHeight: 1.3,
+                  color: "#1A1A2E",
+                }}
+              >
+                {a.title}
+              </h2>
+            </div>
+
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+              <path d="M9 6l6 6-6 6" stroke="#C4C4D1" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+        );
+      })}
+
+      {articles.length === 0 && (
+        <div style={{ textAlign: "center", padding: "40px 20px", color: "#9595A8" }}>
+          <div style={{ fontSize: 40 }}>🔍</div>
+          <p style={{ fontSize: 14, fontWeight: 600, marginTop: 8 }}>
+            {query
+              ? `Aucun résultat pour « ${query} »`
+              : "Aucun article dans cette catégorie pour l'instant."}
+          </p>
+        </div>
+      )}
+    </div>
   );
 }

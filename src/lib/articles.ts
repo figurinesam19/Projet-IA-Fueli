@@ -203,52 +203,6 @@ export const ARTICLES: Article[] = [
     ],
   },
   {
-    slug: "collations-proteinees",
-    title: "5 collations protéinées sous 150 kcal",
-    excerpt:
-      "Un petit creux à 16h ? Voici 5 encas qui calent, riches en protéines et légers.",
-    category: "recettes",
-    emoji: "🥜",
-    readMinutes: 3,
-    publishedAt: "2026-09-08",
-    body: [
-      {
-        type: "p",
-        text: "Le grignotage n'est pas le problème — le [[choix de l'encas]] l'est. Une collation protéinée coupe la faim jusqu'au repas suivant, contrairement à un biscuit qui relance l'envie de sucre. Voici 5 options sous 150 kcal.",
-      },
-      { type: "img", src: "https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&h=220&fit=crop&q=80", alt: "Encas sains et protéinés" },
-      { type: "h2", text: "1. Skyr ou fromage blanc (150g)" },
-      {
-        type: "p",
-        text: "[[15 à 17g de protéines]] pour environ 90 kcal nature. Le champion des encas rassasiants. Ajoute de la cannelle plutôt que du sucre.",
-      },
-      { type: "h2", text: "2. Un œuf dur + une pomme" },
-      {
-        type: "p",
-        text: "L'œuf apporte [[6g de protéines]] et la pomme des fibres qui calent. Le duo parfait à emporter, [[environ 140 kcal]], zéro préparation.",
-      },
-      { type: "h2", text: "3. Une poignée d'amandes (20g)" },
-      {
-        type: "p",
-        text: "[[120 kcal, 5g de protéines]] et de bonnes graisses. Attention à la quantité : les oléagineux sont denses, une poignée suffit largement.",
-      },
-      { type: "h2", text: "4. Blanc de dinde & bâtonnets de légumes" },
-      {
-        type: "p",
-        text: "2 tranches de blanc de dinde roulées + concombre et carotte. [[Très protéiné, très peu calorique]]. L'encas salé quand le sucré ne tente pas.",
-      },
-      { type: "h2", text: "5. Yaourt grec & quelques fruits rouges" },
-      {
-        type: "p",
-        text: "100g de yaourt grec + une poignée de myrtilles. [[10g de protéines]], un goût de dessert pour environ 110 kcal. Frais et rapide.",
-      },
-      {
-        type: "quote",
-        text: "Un bon encas ne te coupe pas l'appétit du repas suivant — il t'évite d'y arriver affamé.",
-      },
-    ],
-  },
-  {
     slug: "batch-cooking-bases",
     title: "Batch cooking : 3 bases pour toute la semaine",
     excerpt:
