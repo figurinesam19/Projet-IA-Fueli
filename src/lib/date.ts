@@ -46,6 +46,27 @@ export function last7Days(): Date[] {
 }
 
 /**
+ * Convertit un dayKey (AAAA-MM-JJ) en timestamp `consumed_at` pour un repas
+ * ajouté rétroactivement : le jour demandé à 12h00. Renvoie null si la clé
+ * est invalide, dans le futur, ou plus vieille qu'un an.
+ */
+export function consumedAtForDayKey(dayKey: string): string | null {
+  const day = parseDayKey(dayKey);
+  if (!day) return null;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const yearAgo = new Date(today);
+  yearAgo.setDate(yearAgo.getDate() - 366);
+
+  if (day > today || day < yearAgo) return null;
+
+  const at = new Date(day);
+  at.setHours(12, 0, 0, 0);
+  return at.toISOString();
+}
+
+/**
  * Série de jours consécutifs avec au moins un repas, en remontant depuis
  * aujourd'hui. Si aujourd'hui n'a encore rien, la série ne casse pas : on
  * compte depuis hier (sinon l'utilisateur verrait 0 chaque matin).

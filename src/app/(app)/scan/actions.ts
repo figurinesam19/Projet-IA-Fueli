@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { consumedAtForDayKey } from "@/lib/date";
 
 export type ScanItem = {
   name: string;
@@ -16,6 +17,8 @@ export type ScanItem = {
 export async function saveScannedMeal(input: {
   items: ScanItem[];
   kind: "petit_dejeuner" | "dejeuner" | "diner" | null;
+  /** dayKey AAAA-MM-JJ pour ajouter le repas à un jour passé (défaut: maintenant). */
+  day?: string | null;
 }) {
   const supabase = await createClient();
   const {
@@ -35,6 +38,9 @@ export async function saveScannedMeal(input: {
     { kcal: 0, protein_g: 0, carbs_g: 0, fat_g: 0 },
   );
 
+  // Repas rétroactif : consumed_at à midi du jour demandé
+  const consumedAt = input.day ? consumedAtForDayKey(input.day) : null;
+
   const { data: meal, error: mealError } = await supabase
     .from("meals")
     .insert({
@@ -45,6 +51,7 @@ export async function saveScannedMeal(input: {
       total_protein_g: totals.protein_g,
       total_carbs_g: totals.carbs_g,
       total_fat_g: totals.fat_g,
+      ...(consumedAt ? { consumed_at: consumedAt } : {}),
     })
     .select("id")
     .single();
@@ -70,5 +77,5 @@ export async function saveScannedMeal(input: {
   }
 
   revalidatePath("/today");
-  redirect("/today");
+  redirect(consumedAt ? `/today?d=${input.day}` : "/today");
 }

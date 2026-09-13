@@ -8,7 +8,7 @@ import type { FoodResult } from "@/lib/openfoodfacts";
 import { getFoodEmoji } from "@/lib/food-emoji";
 import { AddFoodPanel } from "./add-food-panel";
 
-export function SearchFlow() {
+export function SearchFlow({ day = null }: { day?: string | null }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<FoodResult[]>([]);
@@ -59,6 +59,7 @@ export function SearchFlow() {
       <AddFoodPanel
         food={selected}
         source="recherche"
+        day={day}
         onCancel={() => setSelected(null)}
       />
     );

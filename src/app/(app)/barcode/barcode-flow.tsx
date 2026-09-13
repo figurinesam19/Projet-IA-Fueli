@@ -11,7 +11,7 @@ import { BarcodeScanner } from "./barcode-scanner";
 
 type Mode = "camera" | "manual";
 
-export function BarcodeFlow() {
+export function BarcodeFlow({ day = null }: { day?: string | null }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("camera");
   const [code, setCode] = useState("");
@@ -60,7 +60,7 @@ export function BarcodeFlow() {
   }
 
   if (product) {
-    return <AddFoodPanel food={product} source="code_barre" onCancel={reset} />;
+    return <AddFoodPanel food={product} source="code_barre" day={day} onCancel={reset} />;
   }
 
   return (

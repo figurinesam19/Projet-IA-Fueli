@@ -1,13 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
 import { computeDailyTargets } from "@/lib/nutrition";
-import { currentWeek, dayBounds } from "@/lib/date";
+import { currentWeek, dayBounds, parseDayKey } from "@/lib/date";
 import { DashboardClient, type MealRow } from "./dashboard-client";
 
-export default async function TodayPage() {
+export default async function TodayPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ d?: string }>;
+}) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const [{ data: { user } }, { d }] = await Promise.all([
+    supabase.auth.getUser(),
+    searchParams,
+  ]);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -58,6 +63,13 @@ export default async function TodayPage() {
       targets={targets}
       weekMeals={(meals ?? []) as MealRow[]}
       todayMs={today.getTime()}
+      initialDayMs={(() => {
+        // Jour initial via ?d= (ex. retour après ajout rétroactif)
+        const requested = d ? parseDayKey(d) : null;
+        return requested && requested >= week[0] && requested <= today
+          ? requested.getTime()
+          : null;
+      })()}
       mealTimestamps={(streakRows ?? []).map((r) => r.consumed_at as string)}
       weightLogs={(weightLogs ?? []).map((w) => ({
         logged_on: w.logged_on as string,

@@ -14,10 +14,12 @@ import { saveMealItem } from "../_actions/save-meal-item";
 type Props = {
   food: FoodResult;
   source: "recherche" | "code_barre";
+  /** dayKey AAAA-MM-JJ pour un ajout rétroactif à un jour passé. */
+  day?: string | null;
   onCancel: () => void;
 };
 
-export function AddFoodPanel({ food, source, onCancel }: Props) {
+export function AddFoodPanel({ food, source, day = null, onCancel }: Props) {
   const [quantity, setQuantity] = useState<number>(food.servingQuantity ?? 100);
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +38,7 @@ export function AddFoodPanel({ food, source, onCancel }: Props) {
         quantity_g: quantity,
         ...macros,
         off_barcode: food.code,
+        day,
       });
       if (result?.error) setError(result.error);
     });

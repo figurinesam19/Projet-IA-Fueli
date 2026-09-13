@@ -8,7 +8,7 @@ import {
   type DailyConsumption,
   type DailyTargets,
 } from "@/lib/nutrition";
-import { computeStreak, dayBounds, isSameDay } from "@/lib/date";
+import { computeStreak, dayBounds, isSameDay, toDayKey } from "@/lib/date";
 import { DailyCard } from "./daily-card";
 import { MacroBars } from "./macro-bars";
 import { DateStrip } from "./date-strip";
@@ -41,6 +41,8 @@ type Props = {
   weekMeals: MealRow[];
   /** Timestamp (ms) de minuit aujourd'hui — évite les soucis de fuseau au parse. */
   todayMs: number;
+  /** Jour initialement sélectionné (ms), ex. retour après ajout rétroactif. */
+  initialDayMs: number | null;
   /** Timestamps de tous les repas sur 1 an — pour le calcul de la streak. */
   mealTimestamps: string[];
   /** Pesées des 90 derniers jours, ordre chronologique. */
@@ -68,16 +70,21 @@ export function DashboardClient({
   targets,
   weekMeals,
   todayMs,
+  initialDayMs,
   mealTimestamps,
   weightLogs,
   goal,
 }: Props) {
   const today = useMemo(() => new Date(todayMs), [todayMs]);
-  const [selected, setSelected] = useState<Date>(today);
+  const [selected, setSelected] = useState<Date>(
+    () => new Date(initialDayMs ?? todayMs),
+  );
 
   const isToday = isSameDay(selected, today);
   const initial = firstName.charAt(0).toUpperCase() || "?";
   const streak = useMemo(() => computeStreak(mealTimestamps), [mealTimestamps]);
+  // Suffixe ?d= pour dater les ajouts faits depuis un jour passé
+  const dayQS = isToday ? "" : `?d=${toDayKey(selected)}`;
 
   // Filtrage + agrégation par jour : purement en mémoire, aucun appel réseau.
   const { consumption, mealGroups, dayMeals } = useMemo(() => {
@@ -464,13 +471,13 @@ export function DashboardClient({
         </section>
 
         {/* Boutons secondaires */}
-        {isToday && (
+        {(
           <div
             className="animate-fade-up-5"
             style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}
           >
             <Link
-              href="/search"
+              href={`/search${dayQS}`}
               style={{
                 display: "inline-flex",
                 height: 50,
@@ -489,7 +496,7 @@ export function DashboardClient({
               Rechercher
             </Link>
             <Link
-              href="/barcode"
+              href={`/barcode${dayQS}`}
               style={{
                 display: "inline-flex",
                 height: 50,
@@ -511,7 +518,7 @@ export function DashboardClient({
         )}
       </main>
 
-      {isToday && <ScanFab />}
+      <ScanFab href={`/scan${dayQS}`} />
     </>
   );
 }

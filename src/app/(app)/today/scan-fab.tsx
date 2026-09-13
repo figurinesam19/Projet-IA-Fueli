@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 
-export function ScanFab() {
+export function ScanFab({ href = "/scan" }: { href?: string }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
@@ -23,7 +23,7 @@ export function ScanFab() {
       }}
     >
       <Link
-        href="/scan"
+        href={href}
         style={{
           display: "inline-flex",
           alignItems: "center",

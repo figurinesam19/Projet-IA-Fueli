@@ -11,7 +11,7 @@ import { CameraCapture } from "./camera-capture";
 type MealKind = "petit_dejeuner" | "dejeuner" | "diner";
 type Stage = "capture" | "analyzing" | "review";
 
-export function ScanFlow() {
+export function ScanFlow({ day = null }: { day?: string | null }) {
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -81,7 +81,7 @@ export function ScanFlow() {
 
   function handleSave(items: ScanItem[]) {
     start(async () => {
-      const result = await saveScannedMeal({ items, kind });
+      const result = await saveScannedMeal({ items, kind, day });
       if (result?.error) setError(result.error);
     });
   }
