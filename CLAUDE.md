@@ -17,7 +17,7 @@ Application nutrition IA. "Fueli" vient de l'anglais "fuel" — la nourriture co
 - **Scan code-barre** : saisie manuelle → lookup OFF, validation 8-13 chiffres
 - **Détail repas `/meal/[id]`** : vue complète, changement type repas, suppression item, suppression repas entier (confirmation 2 clics)
 - **Profil** : lecture `/profile`, édition complète `/profile/edit`, suppression définitive (admin client + cascade SQL), déconnexion
-- **Section Apprendre** : 4 articles statiques (mythes, objectifs, sport, basiques), liste + détail
+- **Section Apprendre** : 12 articles statiques (`src/lib/articles.ts`), 4 catégories (bases/mindset/nutrition/recettes), liste filtrable + carte à la une + détail. Catégorie Recettes fournie : 5 recettes (petits-déj, déjeuners express, dîners légers, collations, batch cooking) + articles hors-repas (sommeil & faim, resto)
 - **RGPD complet** : politique confidentialité 9 sections, consentement bloquant, droits implémentés, RLS strict
 - **Identité visuelle** : Inter, palette bleu/orange/jaune, fond clair, bottom nav 3 onglets, border-radius 8/12px, pas de dark mode (V1)
 - **Déploiement Vercel** : app live sur https://projet-ia-fueli.vercel.app (push sur `main` = déploiement auto), variables d'env configurées, HTTPS
