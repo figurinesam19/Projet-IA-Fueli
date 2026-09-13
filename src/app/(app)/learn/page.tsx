@@ -6,7 +6,6 @@ import { Clock, Search } from "lucide-react";
 import { ARTICLES, type ArticleCategory } from "@/lib/articles";
 
 // Labels UI exacts demandés → les articles "nutrition" et "bases" mappent directement
-// "recettes" est prévu pour les futurs articles, affiché vide pour l'instant
 const CAT_META: Record<
   ArticleCategory,
   { filterLabel: string; displayLabel: string; emoji: string; tint: string; color: string }
