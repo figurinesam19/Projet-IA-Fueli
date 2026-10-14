@@ -169,25 +169,27 @@ export function DailyCard({ consumedKcal, targetKcal }: Props) {
           >
             {displayKcal.toLocaleString("fr-FR")}
           </span>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "#9595A8", marginTop: 2 }}>
-            / {targetKcal.toLocaleString("fr-FR")} kcal
-          </span>
-          <span
-            style={{
-              marginTop: 8,
-              background: remaining > 0 ? "#FFF3EC" : "#EEF3FF",
-              color: remaining > 0 ? "#E5550A" : "#1A5CFF",
-              fontSize: 12,
-              fontWeight: 700,
-              padding: "4px 11px",
-              borderRadius: 999,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {remaining > 0
-              ? `${remaining.toLocaleString("fr-FR")} kcal restantes`
-              : "Objectif atteint 🎯"}
-          </span>
+          {remaining > 0 ? (
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#9595A8", marginTop: 4 }}>
+              sur {targetKcal.toLocaleString("fr-FR")} kcal
+            </span>
+          ) : (
+            <span
+              style={{
+                marginTop: 8,
+                background: "#34D399",
+                color: "#fff",
+                fontSize: 12,
+                fontWeight: 800,
+                padding: "5px 12px",
+                borderRadius: 999,
+                whiteSpace: "nowrap",
+                boxShadow: "0 4px 12px rgba(52,211,153,.35)",
+              }}
+            >
+              Objectif atteint 🎯
+            </span>
+          )}
         </div>
       </div>
     </div>
