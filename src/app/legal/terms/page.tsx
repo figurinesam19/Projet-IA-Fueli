@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-const LAST_UPDATE = "25 juin 2026";
+const LAST_UPDATE = "14 octobre 2026";
 
 export default function TermsPage() {
   return (
@@ -35,7 +35,7 @@ export default function TermsPage() {
       <Section title="1. Éditeur du service">
         <p>
           Fueli est un service web de suivi nutritionnel disponible à
-          l&apos;adresse <strong>fueli.app</strong>. Le service est édité par
+          l&apos;adresse <strong>projet-ia-fueli.vercel.app</strong>. Le service est édité par
           l&apos;équipe Fueli. Pour tout contact, utilise l&apos;adresse email
           associée à ton compte.
         </p>

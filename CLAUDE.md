@@ -41,5 +41,6 @@ Application nutrition IA. "Fueli" vient de l'anglais "fuel" — la nourriture co
 
 1. **Scan code-barre via caméra** (@zxing/browser ou BarcodeDetector) — nécessite HTTPS
 2. **Passe design complète** — animations, micro-interactions, hiérarchie visuelle
-3. **CGU** page `/legal/terms`
-4. **Articles supplémentaires** dans la section Apprendre
+3. **Articles supplémentaires** dans la section Apprendre
+
+> CGU `/legal/terms` : FAIT (10 sections, liée depuis profil + onboarding RGPD). Reste sur l'adresse Vercel tant que le domaine custom n'est pas branché.
