@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   consumedKcal: number;
@@ -9,10 +9,55 @@ type Props = {
 
 const C = 2 * Math.PI * 78; // ≈ 490.1
 
+/**
+ * Compte de la valeur précédemment affichée jusqu'à `target`, en easeOutCubic
+ * (même ressenti que le cubic-bezier de l'anneau). Au changement de jour on
+ * repart de la valeur courante — pas d'aller-retour par zéro. Respecte
+ * prefers-reduced-motion.
+ */
+function useCountUp(target: number, duration = 900, delay = 80) {
+  const [value, setValue] = useState(0);
+  const fromRef = useRef(0);
+
+  useEffect(() => {
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const from = fromRef.current;
+    if (reduce || from === target) {
+      fromRef.current = target;
+      setValue(target);
+      return;
+    }
+
+    let raf = 0;
+    let startTs = 0;
+    const tick = (now: number) => {
+      if (!startTs) startTs = now;
+      const t = Math.min((now - startTs) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const current = Math.round(from + (target - from) * eased);
+      fromRef.current = current;
+      setValue(current);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    const to = setTimeout(() => {
+      raf = requestAnimationFrame(tick);
+    }, delay);
+    return () => {
+      clearTimeout(to);
+      cancelAnimationFrame(raf);
+    };
+  }, [target, duration, delay]);
+
+  return value;
+}
+
 export function DailyCard({ consumedKcal, targetKcal }: Props) {
   const remaining = Math.max(targetKcal - consumedKcal, 0);
   const pct = Math.min((consumedKcal / targetKcal) * 100, 100);
   const [animPct, setAnimPct] = useState(0);
+  const displayKcal = useCountUp(consumedKcal);
 
   useEffect(() => {
     const t = setTimeout(() => setAnimPct(pct), 80);
@@ -122,7 +167,7 @@ export function DailyCard({ consumedKcal, targetKcal }: Props) {
               fontVariantNumeric: "tabular-nums",
             }}
           >
-            {consumedKcal.toLocaleString("fr-FR")}
+            {displayKcal.toLocaleString("fr-FR")}
           </span>
           <span style={{ fontSize: 13, fontWeight: 600, color: "#9595A8", marginTop: 2 }}>
             / {targetKcal.toLocaleString("fr-FR")} kcal
