@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { saveCredentials } from "@/lib/credentials";
 import {
   saveActivity,
   saveGoal,
@@ -65,6 +66,7 @@ export function OnboardingFlow({ initialStep, initialProfile }: Props) {
       );
       return;
     }
+    await saveCredentials(email, password);
     router.refresh();
     setStep(2);
   }

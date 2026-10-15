@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { saveCredentials } from "@/lib/credentials";
 
 export function LoginForm() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export function LoginForm() {
         setError("Email ou mot de passe incorrect.");
         return;
       }
+      await saveCredentials(email, password);
       router.replace("/");
       router.refresh();
     });

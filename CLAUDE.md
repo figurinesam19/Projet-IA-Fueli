@@ -39,8 +39,9 @@ Application nutrition IA. "Fueli" vient de l'anglais "fuel" — la nourriture co
 
 ## ⬜ Reste à faire (par priorité)
 
-1. **Scan code-barre via caméra** (@zxing/browser ou BarcodeDetector) — nécessite HTTPS
-2. **Passe design complète** — animations, micro-interactions, hiérarchie visuelle
-3. **Articles supplémentaires** dans la section Apprendre
+1. **Passe design complète** — animations, micro-interactions, hiérarchie visuelle
+2. **Articles supplémentaires** dans la section Apprendre
 
+> Scan code-barre via caméra `/barcode` : FAIT (commit `db72a01`, `barcode-scanner.tsx` avec `@zxing/browser` `BrowserMultiFormatReader`, mode caméra par défaut, fallback saisie manuelle).
+> Poids objectif (barre de progression « il te reste X kg » + ETA) : proposé mais non retenu — piste rouvrable si Samuel change d'avis (nécessiterait champ profil + onboarding).
 > CGU `/legal/terms` : FAIT (10 sections, liée depuis profil + onboarding RGPD). Reste sur l'adresse Vercel tant que le domaine custom n'est pas branché.
