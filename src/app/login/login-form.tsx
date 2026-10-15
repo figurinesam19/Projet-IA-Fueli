@@ -1,14 +1,43 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { ScanFace } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { saveCredentials } from "@/lib/credentials";
+
+// L'API passkey de Supabase est encore expérimentale et pas toujours typée.
+type PasskeySignIn = {
+  signInWithPasskey: () => Promise<{ error: { message: string } | null }>;
+};
 
 export function LoginForm() {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [supportsPasskey, setSupportsPasskey] = useState(false);
+
+  useEffect(() => {
+    setSupportsPasskey(
+      typeof window !== "undefined" &&
+        typeof window.PublicKeyCredential !== "undefined",
+    );
+  }, []);
+
+  function onPasskey() {
+    setError(null);
+    start(async () => {
+      const supabase = createClient();
+      const auth = supabase.auth as unknown as PasskeySignIn;
+      const { error } = await auth.signInWithPasskey();
+      if (error) {
+        setError("Connexion par Face ID impossible. Utilise ton mot de passe.");
+        return;
+      }
+      router.replace("/");
+      router.refresh();
+    });
+  }
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -103,6 +132,44 @@ export function LoginForm() {
       >
         {pending ? "Connexion…" : "Se connecter"}
       </button>
+
+      {supportsPasskey && (
+        <>
+          {/* Séparateur « ou » */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "4px 0" }}>
+            <span style={{ flex: 1, height: 1, background: "#E8E8F0" }} />
+            <span style={{ fontSize: 12, fontWeight: 600, color: "#C4C4D1" }}>ou</span>
+            <span style={{ flex: 1, height: 1, background: "#E8E8F0" }} />
+          </div>
+
+          <button
+            type="button"
+            onClick={onPasskey}
+            disabled={pending}
+            style={{
+              width: "100%",
+              padding: "15px",
+              borderRadius: 16,
+              border: "1.5px solid #E8E8F0",
+              background: "#fff",
+              color: "#1A1A2E",
+              fontSize: 15,
+              fontWeight: 700,
+              fontFamily: "inherit",
+              cursor: pending ? "not-allowed" : "pointer",
+              opacity: pending ? 0.6 : 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 9,
+              boxShadow: "0 4px 12px rgba(26,26,46,.05)",
+            }}
+          >
+            <ScanFace size={18} color="#1A5CFF" />
+            Se connecter avec Face ID
+          </button>
+        </>
+      )}
     </form>
   );
 }

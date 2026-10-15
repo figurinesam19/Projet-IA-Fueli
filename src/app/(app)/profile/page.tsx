@@ -3,6 +3,7 @@ import { ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { computeDailyTargets } from "@/lib/nutrition";
 import { ProfileActions } from "./profile-actions";
+import { PasskeySettings } from "./passkey-settings";
 
 const KIND_META: Record<string, { emoji: string; label: string }> = {
   petit_dejeuner: { emoji: "🌅", label: "Petit-déjeuner" },
@@ -249,6 +250,9 @@ export default async function ProfilePage() {
           label="Aide & contact"
         />
       </div>
+
+      {/* ===== CONNEXION PAR FACE ID (PASSKEY) ===== */}
+      <PasskeySettings />
 
       {/* ===== LÉGAL ===== */}
       <div
